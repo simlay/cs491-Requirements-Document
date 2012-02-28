@@ -176,6 +176,20 @@ t = trainEvent(mountains.entered(train1), atMountains, 60 * 60 * 5)
 \end{verbatim}
 \subsection{Manual Switch Control}
 \begin{verbatim}
+# Lets mess with some switches!
+
+train1 = track.getTrain(1204)
+switch1 = track.nextSwitch(train1)
+
+if switch1.getSection().reserved():
+    train1.stop()
+end if
+
+waituntil (NOT switch1.getSection().reserved())
+
+# This makes the switch open or closed to allow the train to pass.
+switch1.allowPass(train1)
+train1.setSpeed(50)
 \end{verbatim}
 
 \end{document}
