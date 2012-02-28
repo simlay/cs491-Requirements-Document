@@ -74,6 +74,7 @@ Sebastian
 \subsection{Speed Limits}
 
 \section{Sample Scripts}
+In this section we outline what someone using the \TSL would be able to build based on the functions we've outlined.
 
 \subsection{Initialization}
 \begin{verbatim}
@@ -116,7 +117,15 @@ if !isControlProgramRunning():
  * bridges for safety.
  */
 
-//
+# define the function that will be called when event occurs
+def slowDown(train):
+    s = train1.getSpeed()
+	if (s > 25):
+		train1.setSpeed(25)
+		waitUntil(train1.location != section)
+		    train1.setSpeed(s)
+
+# Create the object for a certain train (#1204)
 train1 = track.getTrain(1204)
 train1.setSpeed(50)
 
@@ -125,17 +134,32 @@ bridgeSections = track.getSections([(15,25), (23,44),(43,66)])
 
 # Loop over all bridge sections and slow the train at all bridge sections
 for section in bridgeSections:
-
-when train1 enters section do:
-        s = train1.getSpeed()
-		if (s > 25):
-			train1.setSpeed(25)
-
-			waitUntil(train1.location != section)
-			    train1.setSpeed(s)
+    t = trainEvent(section.entered(train1), slowDown, 0);
+    
 \end{verbatim}
 \subsection{Go to Mountains}
 \begin{verbatim}
+/*
+ * We program the train to go to the mountains section that we define,
+ * then once there we tell the train to sound it's horn.
+ */
+
+# let 35 be the section for the mountains
+mountains = track.getSection(35) 
+
+# Tell train1 to go to the mountains.
+train1.gotoSection(mountains)
+
+# define the function we would like to register
+def atMountains():
+	train1.hornOn(5) # Duration = 5 secs
+    train1.reverseDirection()
+
+#here we tell the event handler to only register this function for 5 minutes.
+t = trainEvent(mountains.entered(train1), atMountains, 60 * 60 * 5) 
+ 
+
+
 \end{verbatim}
 \subsection{Manual Switch Control}
 \begin{verbatim}
