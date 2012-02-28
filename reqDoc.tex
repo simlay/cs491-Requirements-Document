@@ -26,7 +26,7 @@ Creation of a Python library to communicate with the control software for the mo
 \subsection{Document Definitions}
 \paragraph{\TSL} This refers to the Python with our library added on.
 \paragraph{\CS} This refers to the AdaRail program which works between the virtual throttles (such as our Scripting Language) and the track itself. This is the program our library will directly communicate with.
-\paragraph{\LC} Local copy of all the things.
+\paragraph{\LC} Our library shall have a thread which listens to all messages, and update a local copy of the train states. For accessor functions, this local copy can be the one read.
 \subsection{References}
 
 \section{Vision}
@@ -36,9 +36,10 @@ Paul
 \subsection{Risk Assessment}
 
 \section{General Description}
-Alex
+\subsection{User Characteristics} 
+Users of this library will be programmers, and will be interested in the model trains. Since this is built on top of Python, anyone using it should be expected to know a bit of python before they start using our library. While the learning curve may be steeper than that of a manual throttle, this library will be much more powerful. We have specified objects and functionality in such a way that it should be intuative to manipulate the train system.
 \subsection{Library Features}
-\subsection{User Characteristics}
+Upon inclusion of the library, a user will be able to either start the \CS, or receive from it information about the current state of the train system. An XML document with the physical topology will have to be read in. The user will be able to call library functions, declare objects, and call methods on those objects. All of these features will be to allow the user to poll and manipulate the train system.
 
 \section{Specific Requirements}
 Alex
@@ -50,7 +51,7 @@ Object: TrainEvent
 \\f1, f2 are functions. f1 returns a boolean, f2 does the event's desired things.
 \\n is the number of times the event can happen before it is automatically unregistered (0 == infinite)
 \\functions on TrainEvents:
-\\t.register()	--adds to observer's list of things to watch (no op if already exists)
+\\t.register()		--adds to observer's list of things to watch (no op if already exists)
 \\t.unregister()	--removes from observer's list (no op if not exists)
 
 \section{External Interface Requirements}
@@ -69,7 +70,7 @@ Sebastian
 \subsection{Security Requirements}
 \subsection{Safety Requirements}
 
-\section{Additional Functionality}
+\section{Additional Functionality For Future Releases}
 \subsection{Front End}
 \subsection{Speed Limits}
 
