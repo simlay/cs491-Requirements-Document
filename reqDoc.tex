@@ -18,28 +18,42 @@
 
 %\addtocounter{page}{-1}
 \section{Scope}
+Alex
 \subsection{Purpose}
 \subsection{Document Definitions}
 \subsection{References}
 
 \section{Vision}
+Paul
 \subsection{Background}
-\subsection{Perspective}
+\subsection{Product Perspective}
 \subsection{Risk Assessment}
 
 \section{General Description}
+Alex
 \subsection{Library Features}
+\subsection{User Characteristics}
 
 \section{Specific Requirements}
+Alex
 \subsection{Objects in Library}
 \subsection{Functions in Library}
 \subsubsection{Event Driven Functions}
+Object: TrainEvent
+\\t = TrainEvent(f1, f2, n)
+\\f1, f2 are functions. f1 returns a boolean, f2 does the event's desired things.
+\\n is the number of times the event can happen before it is automatically unregistered (0 == infinite)
+\\functions on TrainEvents:
+\\t.register()	--adds to observer's list of things to watch (no op if already exists)
+\\t.unregister()	--removes from observer's list (no op if not exists)
 
 \section{External Interface Requirements}
+Sebastian
 \subsection{Control Program}
 \subsection{Train Topology}
 
 \section{Additions to Current Software}
+Sebastian
 \subsection{Design Constraints}
 \subsection{Control Program}
 \subsection{XML Specification}
@@ -54,6 +68,7 @@
 \subsection{Speed Limits}
 
 \section{Sample Scripts}
+Paul
 \subsection{Initialization}
 \subsection{Starting While Running}
 \subsection{Slow Down Over Bridges}
