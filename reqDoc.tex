@@ -38,7 +38,7 @@ Paul
 \subsection{Risk Assessment}
 
 \section{General Description}
-\subsection{User Characteristics} 
+\subsection{User Characteristics}
 Users of this library will be programmers, and will be interested in the model trains. Since this is built on top of Python, anyone using it should be expected to know a bit of python before they start using our library. While the learning curve may be steeper than that of a manual throttle, this library will be much more powerful. We have specified objects and functionality in such a way that it should be intuative to manipulate the train system.
 \subsection{Library Features}
 Upon inclusion of the library, a user will be able to either start the \CS, or receive from it information about the current state of the train system. An XML document with the physical topology will have to be read in. The user will be able to call library functions, declare objects, and call methods on those objects. All of these features will be to allow the user to poll and manipulate the train system.
@@ -113,7 +113,7 @@ initControl(trains)     //sends msg to controller to start up, w/initial train l
 \subsection{Starting While Running}
 \begin{verbatim}
 /*
- * Trains are assumed to be moving, and here we shall set up the initial 
+ * Trains are assumed to be moving, and here we shall set up the initial
  * train objects based on querying the control program.
  */
 
@@ -148,7 +148,7 @@ bridgeSections = track.getSections([(15,25), (23,44),(43,66)])
 # Loop over all bridge sections and slow the train at all bridge sections
 for section in bridgeSections:
     t = trainEvent(section.entered(train1), slowDown, 0);
-    
+
 \end{verbatim}
 \subsection{Go to Mountains}
 \begin{verbatim}
@@ -158,7 +158,7 @@ for section in bridgeSections:
  */
 
 # let 35 be the section for the mountains
-mountains = track.getSection(35) 
+mountains = track.getSection(35)
 
 # Tell train1 to go to the mountains.
 train1.gotoSection(mountains)
@@ -169,8 +169,8 @@ def atMountains():
     train1.reverseDirection()
 
 #here we tell the event handler to only register this function for 5 minutes.
-t = trainEvent(mountains.entered(train1), atMountains, 60 * 60 * 5) 
- 
+t = trainEvent(mountains.entered(train1), atMountains, 60 * 60 * 5)
+
 
 
 \end{verbatim}
