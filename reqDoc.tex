@@ -7,6 +7,8 @@
 \usepackage{hanging}
 \usepackage{enumerate}
 \usepackage{color}
+\usepackage{hyperref}
+
 \def\TSL{Train Scripting Language\xspace}
 \def\CS{Control Progam\xspace}
 \def\LC{Local Copy of Train State\xspace}
@@ -55,15 +57,25 @@ Object: TrainEvent
 \\t.unregister()	--removes from observer's list (no op if not exists)
 
 \section{External Interface Requirements}
-Sebastian
+Sebastian\\
+    In this section, we go over the general interface requirements for the train scripting language.
 \subsection{Control Program}
+    There shall be one or more threads which intaract between the control session and the current train script instance.
 \subsection{Train Topology}
 
 \section{Additions to Current Software}
-Sebastian
+Sebastian \\
+    In this section, we go over what additions needed to be added to the
+    current architecture.
 \subsection{Design Constraints}
 \subsection{Control Program}
+    A messaging protocol between ``virtual'' remotes the control program shall be added.  This protocol is simply for initializing the train and knowing if the loco buffer server is running.
 \subsection{XML Specification}
+    The list of additions to the XML specification is:
+\begin{enumerate}
+    \item Length between each sensor on the track.
+    \item Speedlimits on a given section.
+\end{enumerate}
 
 \section{Non-Functional Requirements}
 \subsection{Performance Requirements}
@@ -75,11 +87,95 @@ Sebastian
 \subsection{Speed Limits}
 
 \section{Sample Scripts}
-Paul
+In this section we outline what someone using the \TSL would be able to build based on the functions we've outlined.
+
 \subsection{Initialization}
+\begin{verbatim}
+/*
+ * Trains must be stopped, and we'll send signals to turn lights/horn off,
+ * regardless of state.
+ */
+
+if isControlProgramRunning():
+    error(“already running”);
+runController
+readXML(filename)
+vector<train> trains = new vector<train>
+t1 = new Train(244, 3, 4, 5, 6)    //initialized with ID and vector of sensors owned by it
+trains.add(t1)
+t2 = new Train(133, 19, 20, 24, 25, 26)
+trains.add(t2)
+t3 = new Train(212, 10, 11, 12)
+trains.add(t3)
+initControl(trains)     //sends msg to controller to start up, w/initial train locs
+\end{verbatim}
+
 \subsection{Starting While Running}
+\begin{verbatim}
+/*
+ * Trains are assumed to be moving, and here we shall set up the initial 
+ * train objects based on querying the control program.
+ */
+
+readXML(filename)
+if !isControlProgramRunning():
+    error(“ctrl not running”)
+	trains = getTrainState();
+\end{verbatim}
+
 \subsection{Slow Down Over Bridges}
+\begin{verbatim}
+/*
+ * We've decided that we want to slow all trains down while going over
+ * bridges for safety.
+ */
+
+# define the function that will be called when event occurs
+def slowDown(train):
+    s = train1.getSpeed()
+	if (s > 25):
+		train1.setSpeed(25)
+		waitUntil(train1.location != section)
+		    train1.setSpeed(s)
+
+# Create the object for a certain train (#1204)
+train1 = track.getTrain(1204)
+train1.setSpeed(50)
+
+# Get the sections on the bridge(s)
+bridgeSections = track.getSections([(15,25), (23,44),(43,66)])
+
+# Loop over all bridge sections and slow the train at all bridge sections
+for section in bridgeSections:
+    t = trainEvent(section.entered(train1), slowDown, 0);
+    
+\end{verbatim}
 \subsection{Go to Mountains}
+\begin{verbatim}
+/*
+ * We program the train to go to the mountains section that we define,
+ * then once there we tell the train to sound it's horn.
+ */
+
+# let 35 be the section for the mountains
+mountains = track.getSection(35) 
+
+# Tell train1 to go to the mountains.
+train1.gotoSection(mountains)
+
+# define the function we would like to register
+def atMountains():
+	train1.hornOn(5) # Duration = 5 secs
+    train1.reverseDirection()
+
+#here we tell the event handler to only register this function for 5 minutes.
+t = trainEvent(mountains.entered(train1), atMountains, 60 * 60 * 5) 
+ 
+
+
+\end{verbatim}
 \subsection{Manual Switch Control}
+\begin{verbatim}
+\end{verbatim}
 
 \end{document}
