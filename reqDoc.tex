@@ -68,11 +68,71 @@ Sebastian
 \subsection{Speed Limits}
 
 \section{Sample Scripts}
-Paul
+
 \subsection{Initialization}
+\begin{verbatim}
+/*
+ * Trains must be stopped, and we'll send signals to turn lights/horn off,
+ * regardless of state.
+ */
+
+if isControlProgramRunning():
+    error(“already running”);
+runController
+readXML(filename)
+vector<train> trains = new vector<train>
+t1 = new Train(244, 3, 4, 5, 6)    //initialized with ID and vector of sensors owned by it
+trains.add(t1)
+t2 = new Train(133, 19, 20, 24, 25, 26)
+trains.add(t2)
+t3 = new Train(212, 10, 11, 12)
+trains.add(t3)
+initControl(trains)     //sends msg to controller to start up, w/initial train locs
+\end{verbatim}
+
 \subsection{Starting While Running}
+\begin{verbatim}
+/*
+ * Trains are assumed to be moving, and here we shall set up the initial 
+ * train objects based on querying the control program.
+ */
+
+readXML(filename)
+if !isControlProgramRunning():
+    error(“ctrl not running”)
+	trains = getTrainState();
+\end{verbatim}
+
 \subsection{Slow Down Over Bridges}
+\begin{verbatim}
+/*
+ * We've decided that we want to slow all trains down while going over
+ * bridges for safety.
+ */
+
+//
+train1 = track.getTrain(1204)
+train1.setSpeed(50)
+
+# Get the sections on the bridge(s)
+bridgeSections = track.getSections([(15,25), (23,44),(43,66)])
+
+# Loop over all bridge sections and slow the train at all bridge sections
+for section in bridgeSections:
+
+when train1 enters section do:
+        s = train1.getSpeed()
+		if (s > 25):
+			train1.setSpeed(25)
+
+			waitUntil(train1.location != section)
+			    train1.setSpeed(s)
+\end{verbatim}
 \subsection{Go to Mountains}
+\begin{verbatim}
+\end{verbatim}
 \subsection{Manual Switch Control}
+\begin{verbatim}
+\end{verbatim}
 
 \end{document}
