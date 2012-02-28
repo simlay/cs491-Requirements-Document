@@ -1,4 +1,4 @@
-\documentclass[a4paper,10pt,notitlepage]{article}
+\documentclass[a4paper,11pt,notitlepage]{article}
 \usepackage{xspace}
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath}
@@ -9,6 +9,9 @@
 \usepackage{color}
 \usepackage{hyperref}
 
+\def\TSL{Train Scripting Language\xspace}
+\def\CS{Control Progam\xspace}
+\def\LC{Local Copy of Train State\xspace}
 \title{{\bf Software Project Requirements Specification} \\ for \\ {\bf Train Scripting Python Library}}
 \author{Prepared by Alex Wipf, Sebastian Imlay, Max Aussendorf, Paul Sheraton}
 \parskip 7.2pt
@@ -16,14 +19,16 @@
 \begin{document}
 \maketitle
 \pagebreak
-
 \tableofcontents
 
 %\addtocounter{page}{-1}
 \section{Scope}
-Alex
 \subsection{Purpose}
+Creation of a Python library to communicate with the control software for the model train in CF408. This library will allow users to create scripts which can control the trains without human interaction.
 \subsection{Document Definitions}
+\paragraph{\TSL} This refers to the Python with our library added on.
+\paragraph{\CS} This refers to the AdaRail program which works between the virtual throttles (such as our Scripting Language) and the track itself. This is the program our library will directly communicate with.
+\paragraph{\LC} Local copy of all the things.
 \subsection{References}
 
 \section{Vision}
@@ -63,7 +68,13 @@ Sebastian \\
     current architecture.
 \subsection{Design Constraints}
 \subsection{Control Program}
+    A messaging protocol between ``virtual'' remotes the control program shall be added.  This protocol is simply for initializing the train and knowing if the loco buffer server is running.
 \subsection{XML Specification}
+    The list of additions to the XML specification is:
+\begin{enumerate}
+    \item Length between each sensor on the track.
+    \item Speedlimits on a given section.
+\end{enumerate}
 
 \section{Non-Functional Requirements}
 \subsection{Performance Requirements}
