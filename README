@@ -1,0 +1,7 @@
+This repositiory is for the CS 491 Software Requirement Specification.
+To build the pdf, run make.
+
+Files:
+    Makefile - Contains the build script for the latex document.
+    reqDoc.tex - The tex file for the software requirements document.
+    README - This file.
