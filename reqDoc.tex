@@ -208,7 +208,7 @@ Sebastian \\
     current architecture.
 \subsection{Design Constraints}
 \subsection{Control Program}
-    A messaging protocol between ``virtual'' remotes the control program shall be added.  This protocol is simply for initializing the train and knowing if the loco buffer server is running.
+    A messaging protocol between ``virtual'' remotes the control program shall be added.  This protocol is simply for initializing the train and knowing if the loco buffer server is running. The getTrainState and getTrackState functions will need a new message to ask the \CS for data, and a new one to receieve said data.
 \subsection{XML Specification}
     The list of additions to the XML specification is:
 \begin{enumerate}
@@ -224,8 +224,16 @@ Sebastian \\
 
 \newpage
 \section{Additional Functionality For Future Releases}
+Future releases may include these features or others, so design must be portable and accessable enough to allow for that.
 \subsection{Front End}
+The \TSL we have specified is powerful, but some features such as those using higher order functions will lack clarity and intuitivity. A front end may come in any of the following flavors, or a combination of them.
+\begin{enumerate}
+	\item Graphical User Interface. A GUI could be added on top which may have a visual representation of the entire track system, displaying data from \LC in real time. It should have an ability to load scripts or an interactive scripting interface.
+	\item Scripting Wrapper. As mentioned earlier, some aspects of this library will be less than ideal syntactically. This wrapper could translate higher level human language into something the \TSL can understand.
+	\item Web Interface. A concurrent project is building a web throttle, and perhaps the \TSL could be incorporated into this later.
+\end{enumerate}
 \subsection{Speed Limits}
+Speed limits between \TN{}s could be added to the XML Documents, and the \TSL should enforce them. This is a feature that would have to be specified in detail when implemented. Likely, the user could toggle enforcement on and off, and when active it would send messages to the \CS slowing trains down if they enter a section which has a speed limit lower than the desired speed of the train.
 
 \newpage
 \section{Sample Scripts}
