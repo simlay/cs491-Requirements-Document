@@ -13,8 +13,9 @@
 \def\TSL{Train Scripting Language\xspace}
 \def\CS{Control Progam\xspace}
 \def\LC{Local Copy of Train State\xspace}
+\def\TN{Track Node\xspace}
 \title{{\bf Software Project Requirements Specification} \\ for \\ {\bf Train Scripting Python Library}}
-\author{Prepared by Alex Wipf, Sebastian Imlay, Max Aussendorf, \sout{Paul Sheraton}}
+\author{Prepared by Alex Wipf, Sebastian Imlay, Max Aussendorf, Paul Sheraton}
 \parskip 7.2pt
 
 \begin{document}
@@ -30,34 +31,169 @@ Creation of a Python library to communicate with the control software for the mo
 \paragraph{\TSL} This refers to the Python with our library added on.
 \paragraph{\CS} This refers to the AdaRail program which works between the virtual throttles (such as our Scripting Language) and the track itself. This is the program our library will directly communicate with.
 \paragraph{\LC} Our library shall have a thread which listens to all messages, and update a local copy of the train states. For accessor functions, this local copy can be the one read.
+\paragraph{\TN} The track can be thought of as a complex graph between sensors and switches. We refer to either as \TN{}s.
 \subsection{References}
 
+\newpage
 \section{Vision}
 \subsection{Background}
-We would like to create a scripting language that anybody can use to program higher level functions on the railroad. The scripting language itself would be the building blocks that can be used to build a multitude of scripts ranging from things like scheduling the trains to visit certain locations, to making it so that the trains slow down in certain sections.
+The current setup in the train lab provides for basic controls of the trains and track, but all under the manual control of throttles, or throttle-like interfaces. The AdaRail program allows users to guarantee all actions will be safe, but again only using throttles. The aim of this project is to break free of this limitation, and allow a user to write programs to control the trains entirely.
 \subsection{Product Perspective}
-
+We would like to create a scripting language that anybody can use to program higher level functions on the railroad. The scripting language itself would be the building blocks that can be used to build a multitude of scripts ranging from things like scheduling the trains to visit certain locations, to making it so that the trains slow down in certain sections.
 \subsection{Risk Assessment}
+We have aimed to marginalize risks as much as we can in specification. We have required nothing which cannot be implemented in a Python Library.
 
+\newpage
 \section{General Description}
 \subsection{User Characteristics}
 Users of this library will be programmers, and will be interested in the model trains. Since this is built on top of Python, anyone using it should be expected to know a bit of python before they start using our library. While the learning curve may be steeper than that of a manual throttle, this library will be much more powerful. We have specified objects and functionality in such a way that it should be intuative to manipulate the train system.
 \subsection{Library Features}
 Upon inclusion of the library, a user will be able to either start the \CS, or receive from it information about the current state of the train system. An XML document with the physical topology will have to be read in. The user will be able to call library functions, declare objects, and call methods on those objects. All of these features will be to allow the user to poll and manipulate the train system.
 
+\newpage
 \section{Specific Requirements}
-Alex
-\subsection{Objects in Library}
-\subsection{Functions in Library}
-\subsubsection{Event Driven Functions}
-Object: TrainEvent
-\\t = TrainEvent(f1, f2, n)
-\\f1, f2 are functions. f1 returns a boolean, f2 does the event's desired things.
-\\n is the number of times the event can happen before it is automatically unregistered (0 == infinite)
-\\functions on TrainEvents:
-\\t.register()		--adds to observer's list of things to watch (no op if already exists)
-\\t.unregister()	--removes from observer's list (no op if not exists)
+\subsection{Back End}
+The initialization functions shall start several background threads. A great deal of things will have to happen behind the scenes to the user.
+\paragraph{\LC} A thread will have to watch all traffic on the network and update the \LC as changes are made. To support user level multithreading, as well as the internal multithreading, this data and all accessor/modifiers of it must incorporate mutual exclusion.
+\paragraph{Observer} For our event driven functionality, there will have to be a thread whose job it is to monitor changes to the \LC and run even driven functions as needed.
 
+\subsection{Classes in Library}
+All of these objects will exist in the \LC. Their accessors will access the \LC for all information, and the setters will send messages to the \CS. This data must be in one central location so the background threads can watch and set it.
+\subsubsection{Train}
+The train object shall be constructable by users.
+\paragraph{Data}
+The train object shall be either constructed by the user manually and sent to the \CS, or it shall be constructed by the getTrainState function from its data received from the \CS.
+\begin{itemize}
+\item A unique identifier, which shall be the same ID as is used in the \CS.
+\item The location of the train, given in an array of sensors. All the sensors underneath the train, plus those immediately in front of and behind the train shall be included in this array.
+\item A power level for the current speed the train is moving
+\item The direction the train is moving
+\item Whether or not the lights are on
+\item Whether or not the sound is on
+\end{itemize}
+\paragraph{Functions}
+The train object shall be accessible by the following functions.
+\subparagraph{train(integer id, list location)} Constructor. Pre: The train object does not exist. Post: The train object exists, and it is either ``set'' or ``stolen'' through the \CS. The \CS will know where it is located based on the input, and the physical train is expected to be halted at initialization. If the ID is invalid for the \CS, an exception shall be sent back.
+\subparagraph{getTrainState} Alternative multi-constructor. Pre: The train objects do not exist. Post: Train objects are created from the data received from the \CS by making a request for said data. An exception is raised if the \CS is not running.
+\subparagraph{getID} Pre: The train object must exist. Post: Returns the unique identifier of the train.
+\subparagraph{getLocation} Pre: The train object must exist. Post: Returns the array of sensors the train is occupying.
+\subparagraph{getPower} Pre: The train object must exist. Post: Returns the current power level of the train.
+\subparagraph{setPower(integer p)} Pre: The train object must exist. Post: A message is sent to the \CS setting the current power level of the train to that which was given.
+\subparagraph{getDirection} Pre: The train object must exist. Post: Returns the current direction of the train (forward or backwards).
+\subparagraph{setDirection(direction d)} Pre: The train object must exist. Post: A message is sent to the \CS setting the current direction of the train to that which was given.
+\subparagraph{getLights} Pre: The train object must exist. Post: Returns whether or not the lights are on.
+\subparagraph{setLights(boolean l)} Pre: The train object must exist. Post: A message is sent to the \CS setting the current state of the lights to on or off based on input.
+\subparagraph{getSound} Pre: The train object must exist. Post: Returns whether or not the sound is on.
+\subparagraph{setSound(boolean l)} Pre: The train object must exist. Post: A message is sent to the \CS setting the current state of the sound to on or off based on input.
+Other functions defined on the object are:
+\subparagraph{soundHorn} Pre: The train object must exist. Post: A message is sent to the \CS that the train should sound its horn.
+\subparagraph{getSwitchInFront} Pre: The train object must exist. Post: Returns a reference to the switch which is closest to the train in front of it.
+\subparagraph{getSwitchBehind} Pre: The train object must exist. Post: Returns a reference to the switch which is closest to the train behind it.
+\subparagraph{getDistanceTo(node dest)} Pre: The train object must exist. Post: Returns distance to the destination.
+\subparagraph{stop} Pre: The train object must exist. Post: A message is sent to the \CS that the train should stop immediately.
+\subparagraph{isWaiting} Pre: The train object must exist. Post: A boolean is returned whether or not the \CS has put the train into a wait state.
+\subparagraph{toString} Pre: The train object must exist. Post: Returns a string containing all the information about the train's current state.
+
+\subsubsection{Track}
+The track object shall be either constructed by reading the XML file and sent to the \CS, or it shall be constructed by the getTrackState function from its data received from the \CS.
+\paragraph{Data}
+The train object shall contain the following data. It is a graph-like abstraction of the topology.
+\begin{itemize}
+\item An aggregate of all sensors and switches.
+\end{itemize}
+\paragraph{Functions}
+The track object shall be accessible by the following functions.
+\subparagraph{track(XMLDoc topology)} Pre: The track object does not exist. Post: Track object is created from the XML file's topology. An exception is raised if it is non-conforment to the defined XML standards.
+\subparagraph{getTrackState} Alternative constructor. Pre: The track object does not exist. Post: Track object is created from the data received from the \CS by making a request for said data. An exception is raised if the \CS is not running.
+\subparagraph{getSensor(integer ID)} Pre: The track object must exist. Post: Returns a reference to the sensor with the given ID. An exception is raised if it does not exist.
+\subparagraph{getSwitch(integer ID)} Pre: The track object must exist. Post: Returns a reference to the switch with the given ID. An exception is raised if it does not exist.
+\subparagraph{getDistance(node s1, node s2)} Pre: \TN{}s s1 and s2 represent either sensors or switches. The track object must exist. Post: Returns the distance between the two nodes, following the shortest path on the track.
+\subparagraph{toString} Pre: The track object must exist. Post: Returns a string containing all the information about the track and its current state.
+
+\subsubsection{Sensor}
+The sensor objects are created upon the construction of a track. They are not constructable by a user. Sensors represent a \TN in the track graph.
+\paragraph{Data}
+\begin{itemize}
+\item A unique identifier, which shall be the same ID from the XML file.
+\item A reference to the next adjacent \TN.
+\item The distance to the next adjacent \TN.
+\item A reference to the previous adjacent \TN.
+\item The distance to the previous adjacent \TN.
+\end{itemize}
+\paragraph{Functions}
+The sensor object shall be accessible by the following functions.
+\subparagraph{getID} Pre: The sensor object must exist. Post: Returns the unique identifier of the sensor.
+\subparagraph{getDistanceNext} Pre: The sensor object must exist. Post: Returns distance to next \TN.
+\subparagraph{getDistancePrev} Pre: The sensor object must exist. Post: Returns distance to previous \TN.
+
+\subsubsection{Switch}
+The switch objects are created upon the construction of a track. They are not constructable by a user. Switches represent a \TN in the track graph.
+\paragraph{Data}
+\begin{itemize}
+\item A unique identifier, which shall be the same ID from the XML file.
+\item The current state of the switch, either thrown or closed.
+\item A reference to the adjacent \TN.
+\item The distance to the adjacent \TN.
+\item A reference to the adjacent \TN when the switch is thrown.
+\item The distance to the \TN when the switch is thrown.
+\item A reference to the adjacent \TN when the switch is closed.
+\item The distance to the \TN when the switch is closed.
+\end{itemize}
+\paragraph{Functions}
+The switch object shall be accessible by the following functions.
+\subparagraph{getID} Pre: The switch object must exist. Post: Returns the unique identifier of the switch.
+\subparagraph{getState} Pre: The switch object must exist. Post: Returns the current state (Closed or Thrown) of the switch.
+\subparagraph{setState(closed or thrown)} Pre: The switch object must exist. Post: A message is sent to the \CS setting the current state of the switch to that which was given.
+
+\subsubsection{Section}
+A section is a user defined aggregate of contiguous \TN{}s.
+\paragraph{Data}
+\begin{itemize}
+\item An array of \TN{}s.
+\end{itemize}
+\paragraph{Functions}
+The section object shall be accessible by the following functions.
+\subparagraph{section(node e1, node e2)} Constructor. Pre: The section object does not exist. Post: The section object is created as the space between the provided \TN{}s, following the shortest path.
+\subparagraph{getLength} Pre: The section must exist. Post: Returns the length of the section.
+\subparagraph{getOwner} Pre: The section must exist. Post: Returns a reference to the train who occupies any part of this section. Returns null if the entire section is unowned.
+
+\subsection{Functions in Library}
+These functions are not called on objects, but are first class functions of the library itself.
+\subsubsection{Initialization}
+Users will need to be able to initialize the \CS, or get data from it if it is running. To make a decision about this, they will need to be able to tell if it is running already.
+\paragraph{isControlProgRunning()} Pre: None. Post: Returns true if the \CS is already running.
+\paragraph{initControlProg(list trains)} Pre: \CS can not be running. Post: \CS will be running and will be given the inital state of the \emph{stopped} trains.
+\paragraph{Alternative to initialization} getTrainState and getTrackState (see Train and Track classes) can be called if the \CS is already running to initialize the \LC.
+\subsubsection{More Functions}
+These are the remaining standard functions in the library.
+\paragraph{stopAllTrains(list trains)} Pre: None. Post: Stops all trains specified immediately. If list is empty, then all trains in the system are stopped immediately.
+\subsubsection{waitUntil(function cond)} Pre: None. Post: Control is blocked until function cond returns true. Polling time shall be no more frequent than 0.1 seconds.
+
+\subsection{Event Driven Functions}
+Event driven functions are encapsulated by a trainEvent class. For management of event driven functions, there shall be an observer thread. The user may create trainEvent objects which may be manually entered into the observer, and can be automatically or manually removed from it. Creation shall require use of higher order functions.
+\subsubsection{trainEvent Class}
+\paragraph{Data}
+\begin{itemize}
+\item A function ``condition" which must return a boolean
+\item A function ``event" which must have no return
+\item Count for automatic removal ($0 =$ infinite)
+\end{itemize}
+\paragraph{Functions}
+The following functions allow manual control of a train event's existence in the observer.
+\subparagraph{trainEvent(func cond, func event, int count)} Constructor. Pre: The trainEvent does not exist. Post: The trainEvent exists.
+\subparagraph{register} Pre: The trainEvent must exist. Post: The trainEvent will be registered in the observer. No op if it already existed in it.
+\subparagraph{unregister} Pre: The trainEvent must exist. Post: The trainEvent will be removed from the observer. No op if it was not registered in it.
+\paragraph{Description}
+The observer will watch the \LC, and when any of its registered trainEvents' condition functions return true, it will spawn a new thread to execute their event function. This is required to be run in a new thread so as not to block other events from occuring. No event's execute function shall be running more than once at a time. If the count was set by the user to zero, it shall never be automatically removed. If the count was set to a positive integer, the event shall decriment its count every time its event occurs. When it reaches zero, it is automatically unregistered. The observer shall check these no more frequently than 0.1 seconds.
+These functions are non-blocking and shall return immediately.
+
+\subsection{High Level Functions}
+These functions are more ambitious, and should only be attempted after all the previously defined functions have been defined.
+\paragraph{train.getVelocity} Pre: Train object must exist. Post: Returns velocity in m/s or cm/s. Will have to do so using knowledge of the track length and time between sensors firing.
+\paragraph{train.goTo(section destination)} Pre: Train object must exist. Post: Train shall take the shortest path which is unblocked to the specified section, where it shall stop. This function blocks control until it has reached this destination. This will require a dynamic algorithm which can take into account which sections are blocked and other moving trains.
+\paragraph{train.followPath(list nodes)} Pre: Train and nodes must exist. Post: Train takes the shortest path from each node to the next until the final node, when it stops. This can be thought of as a repeated calling of the goTo function. This function blocks control until it has reached the final destination.
+
+\newpage
 \section{External Interface Requirements}
 Sebastian\\
     In this section, we go over the general interface requirements for the train scripting language.
@@ -65,6 +201,7 @@ Sebastian\\
     There shall be one or more threads which intaract between the control session and the current train script instance.
 \subsection{Train Topology}
 
+\newpage
 \section{Additions to Current Software}
 Sebastian \\
     In this section, we go over what additions needed to be added to the
@@ -79,15 +216,18 @@ Sebastian \\
     \item Speedlimits on a given section.
 \end{enumerate}
 
+\newpage
 \section{Non-Functional Requirements}
 \subsection{Performance Requirements}
 \subsection{Security Requirements}
 \subsection{Safety Requirements}
 
+\newpage
 \section{Additional Functionality For Future Releases}
 \subsection{Front End}
 \subsection{Speed Limits}
 
+\newpage
 \section{Sample Scripts}
 In this section we outline what someone using the \TSL would be able to build based on the functions we've outlined.
 
