@@ -15,7 +15,7 @@
 \def\LC{Local Copy of Train State\xspace}
 \def\TN{Track Node\xspace}
 \title{{\bf Software Project Requirements Specification} \\ for \\ {\bf Train Scripting Python Library}}
-\author{Prepared by Alex Wipf, Sebastian Imlay, Max Aussendorf, \sout{Paul Sheraton}}
+\author{Prepared by Alex Wipf, Sebastian Imlay, Max Aussendorf, Paul Sheraton}
 \parskip 7.2pt
 
 \begin{document}
@@ -38,9 +38,9 @@ Creation of a Python library to communicate with the control software for the mo
 \newpage
 \section{Vision}
 \subsection{Background}
-The current setup in the train lab provides for basic controls of the trains and track, but all under the manual control of throttles, or throttle-like interfaces. The AdaRail program allows users to guarantee all actions will be safe, but again only using throttles. The aim of this project is to break free of this limitation, and allow a user to write programs to control the trains entirely. 
+The current setup in the train lab provides for basic controls of the trains and track, but all under the manual control of throttles, or throttle-like interfaces. The AdaRail program allows users to guarantee all actions will be safe, but again only using throttles. The aim of this project is to break free of this limitation, and allow a user to write programs to control the trains entirely.
 \subsection{Product Perspective}
-We would like to create a scripting language that anybody can use to program higher level functions on the railroad. The scripting language itself would be the building blocks that can be used to build a multitude of scripts ranging from things like scheduling the trains to visit certain locations, to making it so that the trains slow down in certain sections. 
+We would like to create a scripting language that anybody can use to program higher level functions on the railroad. The scripting language itself would be the building blocks that can be used to build a multitude of scripts ranging from things like scheduling the trains to visit certain locations, to making it so that the trains slow down in certain sections.
 \subsection{Risk Assessment}
 We have aimed to marginalize risks as much as we can in specification. We have required nothing which cannot be implemented in a Python Library.
 
@@ -105,7 +105,7 @@ The train object shall contain the following data. It is a graph-like abstractio
 \paragraph{Functions}
 The track object shall be accessible by the following functions.
 \subparagraph{track(XMLDoc topology)} Pre: The track object does not exist. Post: Track object is created from the XML file's topology. An exception is raised if it is non-conforment to the defined XML standards.
-\subparagraph{getTrackState} Alternative constructor. Pre: The track object does not exist. Post: Track object is created from the data received from the \CS by making a request for said data. An exception is raised if the \CS is not running. 
+\subparagraph{getTrackState} Alternative constructor. Pre: The track object does not exist. Post: Track object is created from the data received from the \CS by making a request for said data. An exception is raised if the \CS is not running.
 \subparagraph{getSensor(integer ID)} Pre: The track object must exist. Post: Returns a reference to the sensor with the given ID. An exception is raised if it does not exist.
 \subparagraph{getSwitch(integer ID)} Pre: The track object must exist. Post: Returns a reference to the switch with the given ID. An exception is raised if it does not exist.
 \subparagraph{getDistance(node s1, node s2)} Pre: \TN{}s s1 and s2 represent either sensors or switches. The track object must exist. Post: Returns the distance between the two nodes, following the shortest path on the track.
@@ -113,7 +113,7 @@ The track object shall be accessible by the following functions.
 
 \subsubsection{Sensor}
 The sensor objects are created upon the construction of a track. They are not constructable by a user. Sensors represent a \TN in the track graph.
-\paragraph{Data} 
+\paragraph{Data}
 \begin{itemize}
 \item A unique identifier, which shall be the same ID from the XML file.
 \item A reference to the next adjacent \TN.
@@ -129,14 +129,14 @@ The sensor object shall be accessible by the following functions.
 
 \subsubsection{Switch}
 The switch objects are created upon the construction of a track. They are not constructable by a user. Switches represent a \TN in the track graph.
-\paragraph{Data} 
+\paragraph{Data}
 \begin{itemize}
 \item A unique identifier, which shall be the same ID from the XML file.
 \item The current state of the switch, either thrown or closed.
 \item A reference to the adjacent \TN.
 \item The distance to the adjacent \TN.
 \item A reference to the adjacent \TN when the switch is thrown.
-\item The distance to the \TN when the switch is thrown.  
+\item The distance to the \TN when the switch is thrown.
 \item A reference to the adjacent \TN when the switch is closed.
 \item The distance to the \TN when the switch is closed.
 \end{itemize}
@@ -190,7 +190,7 @@ These functions are non-blocking and shall return immediately.
 
 \subsection{High Level Functions}
 These functions are more ambitious, and should only be attempted after all the previously defined functions have been defined.
-\paragraph{train.getVelocity} Pre: Train object must exist. Post: Returns velocity in m/s or cm/s. Will have to do so using knowledge of the track length and time between sensors firing. 
+\paragraph{train.getVelocity} Pre: Train object must exist. Post: Returns velocity in m/s or cm/s. Will have to do so using knowledge of the track length and time between sensors firing.
 \paragraph{train.goTo(section destination)} Pre: Train object must exist. Post: Train shall take the shortest path which is unblocked to the specified section, where it shall stop. This function blocks control until it has reached this destination. This will require a dynamic algorithm which can take into account which sections are blocked and other moving trains.
 \paragraph{train.followPath(list nodes)} Pre: Train and nodes must exist. Post: Train takes the shortest path from each node to the next until the final node, when it stops. This can be thought of as a repeated calling of the goTo function. This function blocks control until it has reached the final destination.
 
