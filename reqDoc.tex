@@ -11,9 +11,7 @@
 \usepackage{hyperref}
 
 \def\TSL{Train Scripting Language\xspace}
-\def\CS{Control Progam\xspace}
-\def\LC{Local Copy of Train State\xspace}
-\def\TN{Track Node\xspace}
+\def\CS{Control Progam\xspace} \def\LC{Local Copy of Train State\xspace} \def\TN{Track Node\xspace}
 \title{{\bf Software Project Requirements Specification} \\ for \\ {\bf Train Scripting Python Library}}
 \author{Prepared by Alex Wipf, Sebastian Imlay, Max Aussendorf, Paul Sheraton}
 \parskip 7.2pt
@@ -25,22 +23,25 @@
 %\addtocounter{page}{-1}
 
 \newpage
-\section{Scope}
-\subsection{Purpose}
-Creation of a Python library to communicate with the control software for the model train in CF408. This library will allow users to create scripts which can control the trains without human interaction.
+\section{Introduction}
+\subsection{Vision Statement}
+WE NEED A FORMAL VISION 
+\subsection{Purpose} 
+Creation of a Python library to communicate with the control software for the model train in CF408. This library will allow users to create scripts which can control the trains without human interaction.  
+\subsection{Background} 
+The current setup in the train lab provides for basic controls of the trains and track, but all under the manual control of throttles, or throttle-like interfaces. The AdaRail program allows users to guarantee all actions will be safe, but again only using throttles. The aim of this project is to break free of this limitation, and allow a user to write programs to control the trains entirely.
+\subsection{Product Perspective}
+We would like to create a scripting language that anybody can use to program higher level functions on the railroad. The scripting language itself would be the building blocks that can be used to build a multitude of scripts ranging from things like scheduling the trains to visit certain locations, to making it so that the trains slow down in certain sections.
 \subsection{Document Definitions}
 \paragraph{\TSL} This refers to the Python with our library added on.
 \paragraph{\CS} This refers to the AdaRail program which works between the virtual throttles (such as our Scripting Language) and the track itself. This is the program our library will directly communicate with.
 \paragraph{\LC} Our library shall have a thread which listens to all messages, and update a local copy of the train states. For accessor functions, this local copy can be the one read.
-\paragraph{\TN} The track can be thought of as a complex graph between sensors and switches. We refer to either as \TN{}s.
+\paragraph{\TN} The track can be thought of as a complex graph of sensors and switches. We refer to either as \TN{}s.
 \subsection{References}
 
 \newpage
-\section{Vision}
-\subsection{Background}
-The current setup in the train lab provides for basic controls of the trains and track, but all under the manual control of throttles, or throttle-like interfaces. The AdaRail program allows users to guarantee all actions will be safe, but again only using throttles. The aim of this project is to break free of this limitation, and allow a user to write programs to control the trains entirely.
-\subsection{Product Perspective}
-We would like to create a scripting language that anybody can use to program higher level functions on the railroad. The scripting language itself would be the building blocks that can be used to build a multitude of scripts ranging from things like scheduling the trains to visit certain locations, to making it so that the trains slow down in certain sections.
+\subsection{Scope}
+NEED FORMAL SCOPE DEFINITION
 \subsection{Risk Assessment}
 We have aimed to marginalize risks as much as we can in specification. We have required nothing which cannot be implemented in a Python Library.
 
@@ -57,7 +58,17 @@ Upon inclusion of the library, a user will be able to either start the \CS, or r
 The initialization functions shall start several background threads. A great deal of things will have to happen behind the scenes to the user.
 \paragraph{\LC} A thread will have to watch all traffic on the network and update the \LC as changes are made. To support user level multithreading, as well as the internal multithreading, this data and all accessor/modifiers of it must incorporate mutual exclusion.
 \paragraph{Observer} For our event driven functionality, there will have to be a thread whose job it is to monitor changes to the \LC and run even driven functions as needed.
-
+\subsection{Constant Enum Types}
+\paragraph{direction} A direction type is necessary so that users can assign trains directions to constant values. This enum shall contain:
+\begin{itemize}
+\item forward
+\item backward
+\end{itemize}
+\paragraph{switchState} A switchState type is necessary so that users can assign switches constant values. This enum shall contain:
+\begin{itemize}
+\item closed
+\item thrown
+\end{itemize}
 \subsection{Classes in Library}
 All of these objects will exist in the \LC. Their accessors will access the \LC for all information, and the setters will send messages to the \CS. This data must be in one central location so the background threads can watch and set it.
 \subsubsection{Train}
@@ -146,20 +157,33 @@ The switch object shall be accessible by the following functions.
 \subparagraph{getState} Pre: The switch object must exist. Post: Returns the current state (Closed or Thrown) of the switch.
 \subparagraph{setState(closed or thrown)} Pre: The switch object must exist. Post: A message is sent to the \CS setting the current state of the switch to that which was given.
 
-\subsubsection{Section}
-A section is a user defined aggregate of contiguous \TN{}s.
+\subsubsection{Location}
+A location is a user defined aggregate of contiguous sensors.
 \paragraph{Data}
 \begin{itemize}
-\item An array of \TN{}s.
+\item An array of sensors.
 \end{itemize}
 \paragraph{Functions}
-The section object shall be accessible by the following functions.
-\subparagraph{section(node e1, node e2)} Constructor. Pre: The section object does not exist. Post: The section object is created as the space between the provided \TN{}s, following the shortest path.
-\subparagraph{getLength} Pre: The section must exist. Post: Returns the length of the section.
-\subparagraph{getOwner} Pre: The section must exist. Post: Returns a reference to the train who occupies any part of this section. Returns null if the entire section is unowned.
+The location object shall be accessible by the following functions.
+\subparagraph{location(list sensors)} Constructor. Pre: The location object does not exist. Post: The location object is created as the space between the provided sensors.
+\subparagraph{getLength} Pre: The location must exist. Post: Returns the length of the location.
+\subparagraph{getOwner} Pre: The location must exist. Post: Returns a reference to the train who occupies any part of this location. Returns null if the entire location is unowned. WHAT IF MULTIPLE TRAINS ARE IN MULTIPLE PARTS OF THE LOCATION?
+
+\subsubsection{Path}
+A path is a user defined aggregate of contiguous sensors. Although it has the same data as a location, it has different real-world meaning, and its functions are different.
+\paragraph{Data}
+\begin{itemize}
+\item An array of sensors.
+\end{itemize}
+\paragraph{Functions}
+The path object shall be accessible by the following functions.
+\subparagraph{path(list sensors)} Constructor. Pre: The path object does not exist. Post: The path object is created as the list of provided sensors.
+\subparagraph{getLength} Pre: The path must exist. Post: Returns the length of the path.
+
 
 \subsection{Functions in Library}
 These functions are not called on objects, but are first class functions of the library itself.
+
 \subsubsection{Initialization}
 Users will need to be able to initialize the \CS, or get data from it if it is running. To make a decision about this, they will need to be able to tell if it is running already.
 \paragraph{isControlProgRunning()} Pre: None. Post: Returns true if the \CS is already running.
@@ -234,7 +258,7 @@ The \TSL we have specified is powerful, but some features such as those using hi
 	\item Web Interface. A concurrent project is building a web throttle, and perhaps the \TSL could be incorporated into this later.
 \end{enumerate}
 \subsection{Speed Limits}
-Speed limits between \TN{}s could be added to the XML Documents, and the \TSL should enforce them. This is a feature that would have to be specified in detail when implemented. Likely, the user could toggle enforcement on and off, and when active it would send messages to the \CS slowing trains down if they enter a section which has a speed limit lower than the desired speed of the train.
+Speed limits between sensors could be added to the XML Documents, and the \TSL should enforce them. This is a feature that would have to be specified in detail when implemented. Likely, the user could toggle enforcement on and off, and when active it would send messages to the \CS slowing trains down if they enter a section which has a speed limit lower than the desired speed of the train.
 
 \newpage
 \section{Sample Scripts}
