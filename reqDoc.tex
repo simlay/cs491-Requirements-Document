@@ -86,9 +86,10 @@ The train object shall be either constructed by the user manually and sent to th
 \paragraph{Functions}
 The train object shall be accessible by the following functions.
 \subparagraph{train(integer id, list location)} Constructor. Pre: The train object does not exist. Post: The train object exists, and it is either ``set'' or ``stolen'' through the \CS. The \CS will know where it is located based on the input, and the physical train is expected to be halted at initialization. If the ID is invalid for the \CS, an exception shall be sent back.
-\subparagraph{getTrainState} Alternative multi-constructor. Pre: The train objects do not exist. Post: Train objects are created from the data received from the \CS by making a request for said data. An exception is raised if the \CS is not running.
+\subparagraph{getTrainState} Alternative multi-constructor. Pre: The train objects do not exist. Post: Train objects are created from the data received from the \CS by making a request for said data. An exception is raised if the \CS is not running. A list of all the train objects is returned.
 \subparagraph{getID} Pre: The train object must exist. Post: Returns the unique identifier of the train.
 \subparagraph{getLocation} Pre: The train object must exist. Post: Returns the array of sensors the train is occupying.
+\subparagraph{occupies(location l)} Pre: The train object must exist. Post: Returns true or false for if any part of the train's location intersects with location l.
 \subparagraph{getPower} Pre: The train object must exist. Post: Returns the current power level of the train.
 \subparagraph{setPower(integer p)} Pre: The train object must exist. Post: A message is sent to the \CS setting the current power level of the train to that which was given.
 \subparagraph{getDirection} Pre: The train object must exist. Post: Returns the current direction of the train (forward or backwards).
@@ -108,6 +109,7 @@ Other functions defined on the object are:
 
 \subsubsection{Track}
 The track object shall be either constructed by reading the XML file and sent to the \CS, or it shall be constructed by the getTrackState function from its data received from the \CS.
+Note: This is a global object of which only one may exist. The global variable `track' is reserved for this.
 \paragraph{Data}
 The train object shall contain the following data. It is a graph-like abstraction of the topology.
 \begin{itemize}
@@ -115,8 +117,8 @@ The train object shall contain the following data. It is a graph-like abstractio
 \end{itemize}
 \paragraph{Functions}
 The track object shall be accessible by the following functions.
-\subparagraph{track(XMLDoc topology)} Pre: The track object does not exist. Post: Track object is created from the XML file's topology. An exception is raised if it is non-conforment to the defined XML standards.
-\subparagraph{getTrackState} Alternative constructor. Pre: The track object does not exist. Post: Track object is created from the data received from the \CS by making a request for said data. An exception is raised if the \CS is not running.
+\subparagraph{readXML(XMLDoc topology)} Pre: The track object must not exist. Post: Track object is created from the XML file's topology. This constructs the global object of the track. Multiple references may be made, but this language will not support multiple track systems per script. This will raise an exception if the global track already exists, or if the document is non-conforment to the XML standards defined.
+\subparagraph{getTrackState} Alternative constructor. Pre: The track object must not exist. Post: Track object is created from the data received from the \CS by making a request for said data. An exception is raised if the \CS is not running.
 \subparagraph{getSensor(integer ID)} Pre: The track object must exist. Post: Returns a reference to the sensor with the given ID. An exception is raised if it does not exist.
 \subparagraph{getSwitch(integer ID)} Pre: The track object must exist. Post: Returns a reference to the switch with the given ID. An exception is raised if it does not exist.
 \subparagraph{getDistance(node s1, node s2)} Pre: \TN{}s s1 and s2 represent either sensors or switches. The track object must exist. Post: Returns the distance between the two nodes, following the shortest path on the track.
@@ -167,7 +169,7 @@ A location is a user defined aggregate of contiguous sensors.
 The location object shall be accessible by the following functions.
 \subparagraph{location(list sensors)} Constructor. Pre: The location object does not exist. Post: The location object is created as the space between the provided sensors.
 \subparagraph{getLength} Pre: The location must exist. Post: Returns the length of the location.
-\subparagraph{getOwner} Pre: The location must exist. Post: Returns a reference to the train who occupies any part of this location. Returns null if the entire location is unowned. WHAT IF MULTIPLE TRAINS ARE IN MULTIPLE PARTS OF THE LOCATION?
+\subparagraph{getOwner} Pre: The location must exist. Post: Returns a list of references to the trains who occupy any part of this location. Returns null if the entire location is unowned. 
 
 \subsubsection{Path}
 A path is a user defined aggregate of contiguous sensors. Although it has the same data as a location, it has different real-world meaning, and its functions are different.
@@ -225,6 +227,7 @@ Sebastian\\
 \subsection{Control Program}
     There shall be one or more threads which intaract between the control session and the current train script instance.
 \subsection{Train Topology}
+	XML Document.
 
 \newpage
 \section{Additions to Current Software}
@@ -262,7 +265,7 @@ Speed limits between sensors could be added to the XML Documents, and the \TSL s
 
 \newpage
 \section{Sample Scripts}
-In this section we outline what someone using the \TSL would be able to build based on the functions we've outlined.
+In this section we outline what someone using the \TSL would be able to build based on the functions we've outlined. It must be noted that syntax may be different depending how it is actually implemented. Syntactic variations are acceptable in design/implementation as long as requirements are met.
 
 \subsection{Initialization}
 \begin{verbatim}
@@ -273,16 +276,15 @@ In this section we outline what someone using the \TSL would be able to build ba
 
 if isControlProgramRunning():
     error(“already running”);
-runController
 readXML(filename)
+runController(xmlDoc)
 vector<train> trains = new vector<train>
 t1 = new Train(244, 3, 4, 5, 6)    //initialized with ID and vector of sensors owned by it
-trains.add(t1)
+trains.append(t1)
 t2 = new Train(133, 19, 20, 24, 25, 26)
-trains.add(t2)
+trains.append(t2)
 t3 = new Train(212, 10, 11, 12)
-trains.add(t3)
-initControl(trains)     //sends msg to controller to start up, w/initial train locs
+trains.append(t3)
 \end{verbatim}
 
 \subsection{Starting While Running}
@@ -295,7 +297,7 @@ initControl(trains)     //sends msg to controller to start up, w/initial train l
 readXML(filename)
 if !isControlProgramRunning():
     error(“ctrl not running”)
-	trains = getTrainState();
+trains = getTrainState();
 \end{verbatim}
 
 \subsection{Slow Down Over Bridges}
@@ -306,23 +308,27 @@ if !isControlProgramRunning():
  */
 
 # define the function that will be called when event occurs
-def slowDown(train):
-    s = train1.getSpeed()
+def slowDown(train t, location l):
+    s = t.getSpeed()
 	if (s > 25):
-		train1.setSpeed(25)
-		waitUntil(train1.location != section)
-		    train1.setSpeed(s)
-
-# Create the object for a certain train (#1204)
-train1 = track.getTrain(1204)
-train1.setSpeed(50)
+		t.setSpeed(25)
+		waitUntil(t.occupies(l))
+		t.setSpeed(s)
 
 # Get the sections on the bridge(s)
-bridgeSections = track.getSections([(15,25), (23,44),(43,66)])
+bridgeLoc = []
+bridgeLoc.append(track.getLocation(5, 6))
+bridgeLoc.append(track.getLocation(10, 11, 12))
+bridgeLoc.append(track.getLocation(22, 23))
 
-# Loop over all bridge sections and slow the train at all bridge sections
-for section in bridgeSections:
-    t = trainEvent(section.entered(train1), slowDown, 0);
+# let t be some list of all the trains we want to slow down for bridges
+for t in trains:
+	# Loop over all bridge sections and slow the train at all bridge sections
+	for l in bridgeLoc:
+		tEv = trainEvent(t.occupies(t, l), slowDown, 0);
+		tEv.register()
+
+#from now on, these train events will ensure that trains crossing bridges are slowed down!
 
 \end{verbatim}
 \subsection{Go to Mountains}
@@ -335,9 +341,6 @@ for section in bridgeSections:
 # let 35 be the section for the mountains
 mountains = track.getSection(35)
 
-# Tell train1 to go to the mountains.
-train1.gotoSection(mountains)
-
 # define the function we would like to register
 def atMountains():
 	train1.hornOn(5) # Duration = 5 secs
@@ -345,6 +348,9 @@ def atMountains():
 
 #here we tell the event handler to only register this function for 5 minutes.
 t = trainEvent(mountains.entered(train1), atMountains, 60 * 60 * 5)
+
+# Tell train1 to go to the mountains.
+train1.gotoSection(mountains)
 
 
 
