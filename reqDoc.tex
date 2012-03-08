@@ -58,35 +58,47 @@ Upon inclusion of the library, a user will be able to either start the \CS, or r
 The initialization functions shall start several background threads. A great deal of things will have to happen behind the scenes to the user.
 \paragraph{\LC} A thread will have to watch all traffic on the network and update the \LC as changes are made. To support user level multithreading, as well as the internal multithreading, this data and all accessor/modifiers of it must incorporate mutual exclusion.
 \paragraph{Observer} For our event driven functionality, there will have to be a thread whose job it is to monitor changes to the \LC and run even driven functions as needed.
+\subsection{Global Variables}
+\paragraph{track} The track must be a global variable. All the trains in this script shall share the track. The decription of the object is later in this section.
 \subsection{Constant Enum Types}
 \paragraph{direction} A direction type is necessary so that users can assign trains directions to constant values. This enum shall contain:
 \begin{itemize}
 \item forward
 \item backward
 \end{itemize}
+\paragraph{trainState} A trainState type is necessary so that users can ask trains their state. This enum shall contain:
+\begin{itemize}
+\item moving
+\item stopped
+\item waiting
+\item error
+\end{itemize}
 \paragraph{switchState} A switchState type is necessary so that users can assign switches constant values. This enum shall contain:
 \begin{itemize}
 \item closed
 \item thrown
+\item moving
 \end{itemize}
 \subsection{Classes in Library}
 All of these objects will exist in the \LC. Their accessors will access the \LC for all information, and the setters will send messages to the \CS. This data must be in one central location so the background threads can watch and set it.
 \subsubsection{Train}
 The train object shall be constructable by users.
 \paragraph{Data}
-The train object shall be either constructed by the user manually and sent to the \CS, or it shall be constructed by the getTrainState function from its data received from the \CS.
+The train object shall be either constructed by the user manually and sent to the \CS, or it shall be constructed by the getTrains function from its data received from the \CS.
 \begin{itemize}
 \item A unique identifier, which shall be the same ID as is used in the \CS.
-\item The location of the train, given in an array of sensors. All the sensors underneath the train, plus those immediately in front of and behind the train shall be included in this array.
+\item The location of the train, given in an array of sensors. All the sensors underneath the train, plus those immediately in front of and behind the train shall be included in this array. Important: Direction is dependant in the order of this list. This list shall be in front to back order for the physical train.
 \item A power level for the current speed the train is moving
+\item trainState
 \item The direction the train is moving
 \item Whether or not the lights are on
-\item Whether or not the sound is on
+\item Whether or not the bell is on
+\item The length of the train
 \end{itemize}
 \paragraph{Functions}
 The train object shall be accessible by the following functions.
 \subparagraph{train(integer id, list location)} Constructor. Pre: The train object does not exist. Post: The train object exists, and it is either ``set'' or ``stolen'' through the \CS. The \CS will know where it is located based on the input, and the physical train is expected to be halted at initialization. If the ID is invalid for the \CS, an exception shall be sent back.
-\subparagraph{getTrainState} Alternative multi-constructor. Pre: The train objects do not exist. Post: Train objects are created from the data received from the \CS by making a request for said data. An exception is raised if the \CS is not running. A list of all the train objects is returned.
+\subparagraph{getTrains} Alternative multi-constructor. Pre: The train objects do not exist. Post: Train objects are created from the data received from the \CS by making a request for said data. An exception is raised if the \CS is not running. A list of all the train objects is returned.
 \subparagraph{getID} Pre: The train object must exist. Post: Returns the unique identifier of the train.
 \subparagraph{getLocation} Pre: The train object must exist. Post: Returns the array of sensors the train is occupying.
 \subparagraph{occupies(location l)} Pre: The train object must exist. Post: Returns true or false for if any part of the train's location intersects with location l.
@@ -96,16 +108,19 @@ The train object shall be accessible by the following functions.
 \subparagraph{setDirection(direction d)} Pre: The train object must exist. Post: A message is sent to the \CS setting the current direction of the train to that which was given.
 \subparagraph{getLights} Pre: The train object must exist. Post: Returns whether or not the lights are on.
 \subparagraph{setLights(boolean l)} Pre: The train object must exist. Post: A message is sent to the \CS setting the current state of the lights to on or off based on input.
-\subparagraph{getSound} Pre: The train object must exist. Post: Returns whether or not the sound is on.
-\subparagraph{setSound(boolean l)} Pre: The train object must exist. Post: A message is sent to the \CS setting the current state of the sound to on or off based on input.
+\subparagraph{getBell} Pre: The train object must exist. Post: Returns whether or not the bell is on.
+\subparagraph{setBell(boolean l)} Pre: The train object must exist. Post: A message is sent to the \CS setting the current state of the bell to on or off based on input.
 Other functions defined on the object are:
-\subparagraph{soundHorn} Pre: The train object must exist. Post: A message is sent to the \CS that the train should sound its horn.
+\subparagraph{soundHorn} Pre: The train object must exist. Post: A message is sent to the \CS that the train should sound its horn. The horn is a pulse, so there is no getter for this.
+\subparagraph{mute} Pre: The train object must exist. Post: A message is sent to the \CS that the train should mute its sound.
+\subparagraph{unmute} Pre: The train object must exist. Post: A message is sent to the \CS that the train should unmute its sound.
 \subparagraph{getSwitchInFront} Pre: The train object must exist. Post: Returns a reference to the switch which is closest to the train in front of it.
 \subparagraph{getSwitchBehind} Pre: The train object must exist. Post: Returns a reference to the switch which is closest to the train behind it.
 \subparagraph{getDistanceTo(node dest)} Pre: The train object must exist. Post: Returns distance to the destination.
 \subparagraph{stop} Pre: The train object must exist. Post: A message is sent to the \CS that the train should stop immediately.
-\subparagraph{isWaiting} Pre: The train object must exist. Post: A boolean is returned whether or not the \CS has put the train into a wait state.
+\subparagraph{getState} Pre: The train object must exist. Post: A trainState (enum defined prior) is returned for which state the train is in.
 \subparagraph{toString} Pre: The train object must exist. Post: Returns a string containing all the information about the train's current state.
+\subparagraph{follow(int power, Path p)} Pre: Train and path objects must exist. The start of the path must be the same section as the front of the train occupies. Post: Train will follow the path. This is a blocking operation. An exception is raised if the train is put into a blocking state.
 
 \subsubsection{Track}
 The track object shall be either constructed by reading the XML file and sent to the \CS, or it shall be constructed by the getTrackState function from its data received from the \CS.
@@ -167,9 +182,21 @@ A location is a user defined aggregate of contiguous sensors.
 \end{itemize}
 \paragraph{Functions}
 The location object shall be accessible by the following functions.
-\subparagraph{location(list sensors)} Constructor. Pre: The location object does not exist. Post: The location object is created as the space between the provided sensors.
+\subparagraph{location(list sensors)} Constructor. Pre: The location object does not exist. Post: The location object is created as the space between the provided sensors. An exception is raised if they are not adjacent.
 \subparagraph{getLength} Pre: The location must exist. Post: Returns the length of the location.
 \subparagraph{getOwner} Pre: The location must exist. Post: Returns a list of references to the trains who occupy any part of this location. Returns null if the entire location is unowned. 
+
+\subsubsection{Section}
+Sections are subsets of locations. They must be a pair of adjacent sensors. All of the methods of locations are valid on sections, as well as a few others.
+\paragraph{Data}
+\begin{itemize}
+\item Pair of sensors.
+\end{itemize}
+\paragraph{Functions}
+The section object shall be accessible by the following functions.
+\subparagraph{section(sensor a, b)} Constructor. Pre: The section does not exist. Post: A section object is created as the space between the pair of sensor ends. An exception is raised if they are not adjacent.
+\subparagraph{prepare} Pre: The section must exist. Post: Any switches within this section are thrown or closed such that a train may travel between the section's pair of sensors. An exception is raised if \CS prevents the operation.
+\subparagraph{isPrepared} Pre: The section must exist. Post: Returns true or false if a the switches within this section are situated to allow travel from this section's pair of sensors.
 
 \subsubsection{Path}
 A path is a user defined aggregate of contiguous sensors. Although it has the same data as a location, it has different real-world meaning, and its functions are different.
@@ -190,7 +217,7 @@ These functions are not called on objects, but are first class functions of the 
 Users will need to be able to initialize the \CS, or get data from it if it is running. To make a decision about this, they will need to be able to tell if it is running already.
 \paragraph{isControlProgRunning()} Pre: None. Post: Returns true if the \CS is already running.
 \paragraph{initControlProg(list trains)} Pre: \CS can not be running. Post: \CS will be running and will be given the inital state of the \emph{stopped} trains.
-\paragraph{Alternative to initialization} getTrainState and getTrackState (see Train and Track classes) can be called if the \CS is already running to initialize the \LC.
+\paragraph{Alternative to initialization} getTrains and getTrackState (see Train and Track classes) can be called if the \CS is already running to initialize the \LC.
 \subsubsection{More Functions}
 These are the remaining standard functions in the library.
 \paragraph{stopAllTrains(list trains)} Pre: None. Post: Stops all trains specified immediately. If list is empty, then all trains in the system are stopped immediately.
@@ -236,7 +263,7 @@ Sebastian \\
     current architecture.
 \subsection{Design Constraints}
 \subsection{Control Program}
-    A messaging protocol between ``virtual'' remotes the control program shall be added.  This protocol is simply for initializing the train and knowing if the loco buffer server is running. The getTrainState and getTrackState functions will need a new message to ask the \CS for data, and a new one to receieve said data.
+    A messaging protocol between ``virtual'' remotes the control program shall be added.  This protocol is simply for initializing the train and knowing if the loco buffer server is running. The getTrains and getTrackState functions will need a new message to ask the \CS for data, and a new one to receieve said data.
 \subsection{XML Specification}
     The list of additions to the XML specification is:
 \begin{enumerate}
@@ -297,7 +324,7 @@ trains.append(t3)
 readXML(filename)
 if !isControlProgramRunning():
     error(“ctrl not running”)
-trains = getTrainState();
+trains = getTrains();
 \end{verbatim}
 
 \subsection{Slow Down Over Bridges}
