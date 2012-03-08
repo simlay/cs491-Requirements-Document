@@ -25,10 +25,10 @@
 \newpage
 \section{Introduction}
 \subsection{Vision Statement}
-WE NEED A FORMAL VISION 
-\subsection{Purpose} 
-Creation of a Python library to communicate with the control software for the model train in CF408. This library will allow users to create scripts which can control the trains without human interaction.  
-\subsection{Background} 
+WE NEED A FORMAL VISION
+\subsection{Purpose}
+Creation of a Python library to communicate with the control software for the model train in CF408. This library will allow users to create scripts which can control the trains without human interaction.
+\subsection{Background}
 The current setup in the train lab provides for basic controls of the trains and track, but all under the manual control of throttles, or throttle-like interfaces. The AdaRail program allows users to guarantee all actions will be safe, but again only using throttles. The aim of this project is to break free of this limitation, and allow a user to write programs to control the trains entirely.
 \subsection{Product Perspective}
 We would like to create a scripting language that anybody can use to program higher level functions on the railroad. The scripting language itself would be the building blocks that can be used to build a multitude of scripts ranging from things like scheduling the trains to visit certain locations, to making it so that the trains slow down in certain sections.
@@ -137,8 +137,8 @@ The sensor objects are created upon the construction of a track. They are not co
 \paragraph{Functions}
 The sensor object shall be accessible by the following functions.
 \subparagraph{getID} Pre: The sensor object must exist. Post: Returns the unique identifier of the sensor.
-\subparagraph{getDistanceNext} Pre: The sensor object must exist. Post: Returns distance to next \TN.
-\subparagraph{getDistancePrev} Pre: The sensor object must exist. Post: Returns distance to previous \TN.
+\subparagraph{getDistanceNext} Pre: The sensor object must exist. Post: Returns next \TN.
+\subparagraph{getDistancePrev} Pre: The sensor object must exist. Post: Returns previous \TN.
 
 \subsubsection{Switch}
 The switch objects are created upon the construction of a track. They are not constructable by a user. Switches represent a \TN in the track graph.
@@ -157,7 +157,14 @@ The switch objects are created upon the construction of a track. They are not co
 The switch object shall be accessible by the following functions.
 \subparagraph{getID} Pre: The switch object must exist. Post: Returns the unique identifier of the switch.
 \subparagraph{getState} Pre: The switch object must exist. Post: Returns the current state (Closed or Thrown) of the switch.
-\subparagraph{setState(closed or thrown)} Pre: The switch object must exist. Post: A message is sent to the \CS setting the current state of the switch to that which was given.
+\subparagraph{getClosedNode} Pre: The switch object must exist.  Post: Returns the closed \TN.
+\subparagraph{getThrownNode} Pre: The switch object must exist.  Post: Returns the thrown \TN.
+\subparagraph{getNarrowNode} Pre: The switch object must exist.  Post: Returns the narrow \TN.
+\subparagraph{getDist} Pre: The switch must exist.  Returns the distance to the switch.
+
+\subparagraph{Throw} Pre: The switch must exist.  Post:  A message is sent to the \CS setting the current state of the switch to Thrown. Exception will be raised if the \CS prevents the operation (possibly due to ownership of section).
+\subparagraph{Close} Pre: The switch must exist.  Post:  A message is sent to the \CS setting the current state of the switch to Closed. Exception will be raised if the \CS prevents the operation (possibly due to ownership of section).
+%\subparagraph{setState(closed, thrown, or moving)} Pre: The switch object must exist. Post: A message is sent to the \CS setting the current state of the switch to that which was given.
 
 \subsubsection{Location}
 A location is a user defined aggregate of contiguous sensors.
@@ -169,7 +176,9 @@ A location is a user defined aggregate of contiguous sensors.
 The location object shall be accessible by the following functions.
 \subparagraph{location(list sensors)} Constructor. Pre: The location object does not exist. Post: The location object is created as the space between the provided sensors.
 \subparagraph{getLength} Pre: The location must exist. Post: Returns the length of the location.
-\subparagraph{getOwner} Pre: The location must exist. Post: Returns a list of references to the trains who occupy any part of this location. Returns null if the entire location is unowned. 
+\subparagraph{getOwner} Pre: The location must exist. Post: Returns a list of references to the trains who occupy any part of this location. Returns null if the entire location is unowned.
+\subparagraph{getSwitches} Pre: The location must exist.  Post: Returns the list of switches in this location.
+\subparagraph{getSections} Pre: The location must exist.  Post: Returns the list of sections in this location.
 
 \subsubsection{Path}
 A path is a user defined aggregate of contiguous sensors. Although it has the same data as a location, it has different real-world meaning, and its functions are different.
@@ -181,6 +190,8 @@ A path is a user defined aggregate of contiguous sensors. Although it has the sa
 The path object shall be accessible by the following functions.
 \subparagraph{path(list sensors)} Constructor. Pre: The path object does not exist. Post: The path object is created as the list of provided sensors.
 \subparagraph{getLength} Pre: The path must exist. Post: Returns the length of the path.
+\subparagraph{getSwitches} Pre: The path must exist.  Post: Returns the list of switches along the path.
+\subparagraph{getSections} Pre: The path must exist.  Post: Returns the list of sections along the path.
 
 
 \subsection{Functions in Library}
@@ -189,7 +200,7 @@ These functions are not called on objects, but are first class functions of the 
 \subsubsection{Initialization}
 Users will need to be able to initialize the \CS, or get data from it if it is running. To make a decision about this, they will need to be able to tell if it is running already.
 \paragraph{isControlProgRunning()} Pre: None. Post: Returns true if the \CS is already running.
-\paragraph{initControlProg(list trains)} Pre: \CS can not be running. Post: \CS will be running and will be given the inital state of the \emph{stopped} trains.
+\paragraph{initControlProg()} Pre: \CS can not be running. Post: \CS will be running and get the trains after this. %and will be given the inital state of the \emph{stopped} trains.
 \paragraph{Alternative to initialization} getTrainState and getTrackState (see Train and Track classes) can be called if the \CS is already running to initialize the \LC.
 \subsubsection{More Functions}
 These are the remaining standard functions in the library.
@@ -219,6 +230,7 @@ These functions are more ambitious, and should only be attempted after all the p
 \paragraph{train.getVelocity} Pre: Train object must exist. Post: Returns velocity in m/s or cm/s. Will have to do so using knowledge of the track length and time between sensors firing.
 \paragraph{train.goTo(section destination)} Pre: Train object must exist. Post: Train shall take the shortest path which is unblocked to the specified section, where it shall stop. This function blocks control until it has reached this destination. This will require a dynamic algorithm which can take into account which sections are blocked and other moving trains.
 \paragraph{train.followPath(list nodes)} Pre: Train and nodes must exist. Post: Train takes the shortest path from each node to the next until the final node, when it stops. This can be thought of as a repeated calling of the goTo function. This function blocks control until it has reached the final destination.
+\paragraph{getPath(s1, s2)} Pre: The track must exist.  Post: Returns the shortest logal distance from s1 to s2 with no double back (possibly reverse).
 
 \newpage
 \section{External Interface Requirements}
