@@ -339,12 +339,69 @@ The train object shall contain the following data. It is a graph-like abstractio
 \end{itemize}
 \paragraph{Functions}
 The track object shall be accessible by the following functions.
-\subparagraph{readXML(XMLDoc topology)} Pre: The track object must not exist. Post: Track object is created from the XML file's topology. This constructs the global object of the track. Multiple references may be made, but this language will not support multiple track systems per script. This will raise an exception if the global track already exists, or if the document is non-conforment to the XML standards defined.
-\subparagraph{getTrackState} Alternative constructor. Pre: The track object must not exist. Post: Track object is created from the data received from the \CS by making a request for said data. An exception is raised if the \CS is not running.
-\subparagraph{getSensor(integer ID)} Pre: The track object must exist. Post: Returns a reference to the sensor with the given ID. An exception is raised if it does not exist.
-\subparagraph{getSwitch(integer ID)} Pre: The track object must exist. Post: Returns a reference to the switch with the given ID. An exception is raised if it does not exist.
-\subparagraph{getDistance(node s1, node s2)} Pre: \TN{}s s1 and s2 represent either sensors or switches. The track object must exist. Post: Returns the distance between the two nodes, following the shortest path on the track.
-\subparagraph{toString} Pre: The track object must exist. Post: Returns a string containing all the information about the track and its current state.
+
+\subparagraph{readXML(XMLDoc topology)}
+\begin{description}
+\item[\hspace{1cm}Pre:] The track object must not exist.
+\item[\hspace{1cm}Post:] Track object is created from the XML file's topology. This constructs the global object of the track. A maximum of one track object shall exist; exception shall be raised if the global track already exists, or if the document is non-conforment to the XML standards defined.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+    readXML (layout.xml)  #creates a global 'track' object
+\end{verbatim}
+\end{description}
+
+\subparagraph{acquireTrackState} Alternative constructor.
+\begin{description}
+\item[\hspace{1cm}Pre:] The track object must not exist. \CS must be running.
+\item[\hspace{1cm}Post:] Track object is created from the data received from the \CS by making a request for said data. An exception is raised if the \CS is not running.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+    if isControlProgRunning():
+        acquireTrackState()
+\end{verbatim}
+\end{description}
+
+\subparagraph{getSensor(integer ID)}
+\begin{description}
+\item[\hspace{1cm}Pre:] The track object must exist.
+\item[\hspace{1cm}Post:] Returns a reference to the sensor with the given ID. An exception is raised if it does not exist.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+    mySensor = getSensor (47)
+\end{verbatim}
+\end{description}
+
+\subparagraph{getSwitch(integer ID)}
+\begin{description}
+\item[\hspace{1cm}Pre:] The track object must exist.
+\item[\hspace{1cm}Post:] Returns a reference to the switch with the given ID. An exception is raised if it does not exist.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+    mySwitch = getSwitch (7)
+\end{verbatim}
+\end{description}
+
+
+\subparagraph{getDistance(node s1, node s2)}
+\begin{description}
+\item[\hspace{1cm}Pre:] \TN{}s s1 and s2 represent either sensors or switches. The track object must exist.
+\item[\hspace{1cm}Post:] Returns the distance between the two nodes, following the shortest path on the track.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+\end{verbatim}
+\end{description}
+
+
+\subparagraph{toString}
+\begin{description}
+\item[\hspace{1cm}Pre:] The track object must exist.
+\item[\hspace{1cm}Post:] Returns a string containing all the information about the track and its current state.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+    
+\end{verbatim}
+\end{description}
 
 \subsubsection{Sensor}
 The sensor objects are created upon the construction of a track. They are not constructable by a user. Sensors represent a \TN in the track graph.
