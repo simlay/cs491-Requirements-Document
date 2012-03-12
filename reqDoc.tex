@@ -538,7 +538,7 @@ The switch object shall be accessible by the following functions.
 \end{verbatim}
 \end{description}
 
-\subparagraph{Throw}
+\subparagraph{throw}
 \begin{description}
 \item[\hspace{1cm}Pre:] The switch must exist.
 \item[\hspace{1cm}Post:] A message is sent to the \CS setting the current state of the switch to Thrown. Exception will be raised if the \CS prevents the operation (possibly due to ownership of section).
@@ -546,11 +546,11 @@ The switch object shall be accessible by the following functions.
 \begin{verbatim}
 
     mySwitch = getSwitch (3)
-    mySwitch.Throw()
+    mySwitch.throw()
 \end{verbatim}
 \end{description}
 
-\subparagraph{Close}
+\subparagraph{close}
 \begin{description}
 \item[\hspace{1cm}Pre:] The switch must exist.
 \item[\hspace{1cm}Post:] A message is sent to the \CS setting the current state of the switch to Closed. Exception will be raised if the \CS prevents the operation (possibly due to ownership of section).
@@ -558,7 +558,7 @@ The switch object shall be accessible by the following functions.
 \begin{verbatim}
 
     mySwitch = getSwitch (3)
-    mySwitch.Close()
+    mySwitch.close()
 \end{verbatim}
 \end{description}
 
@@ -731,16 +731,14 @@ These are the remaining standard functions in the library.
 
 \paragraph{getDistance(node n1, node n2, [flags])}
 \begin{description}
-\item[\hspace{1cm}Pre:] Both nodes must exist.
+\item[\hspace{1cm}Pre:] Both nodes must exist. (for flags, see '3.3 Enums and Flags')
 \item[\hspace{1cm}Post:] Returns the distance along the track between the nodes.
-\item[\hspace{1cm}Flags:]
-\begin{description}
-\item{DISTANCE}
-\end{description}
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
-    
+    trainHead = train.getHeadSensor()
+    destination = track.getSensor (33)
+    dist = getDistance (trainHead, destination)
 \end{verbatim}
 \end{description}
 
