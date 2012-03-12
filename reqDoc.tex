@@ -342,7 +342,7 @@ The train object shall be accessible by the following functions.
 \end{verbatim}
 \end{description}
 
-\subparagraph{follow(int power, Path p)}
+\subparagraph{followPath(int power, Path p)}
 \begin{description}
 \item[\hspace{1cm}Pre:] Train and path objects must exist. The start of the path must be the same section as the front of the train occupies.
 \item[\hspace{1cm}Post:] Train will follow the path. This is a blocking operation. An exception is raised if the train is put into a blocking state.
@@ -817,8 +817,15 @@ These are the remaining standard functions in the library.
 \subsubsection{waitUntil(function cond)}
 \begin{description}
 \item[\hspace{1cm}Pre:] None
-\item[\hspace{1cm}Post:] Control is blocked until function cond returns true. Polling time shall be no more frequent than 0.1 seconds.
-\item[\hspace{1cm}Example:] See example script '8.3 Slow Down Over Bridges'
+\item[\hspace{1cm}Post:] Control is blocked until function cond returns true. Polling time shall be no more frequent than ten times per second.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    train1.setSpeed(100)
+    def t1isWaiting(): return train1.getState == trainState.wait
+    waitUntil(t1isWaiting)  # control is blocked until train is put into wait state
+    train1.soundHorn()  # honk once blocked
+\end{verbatim}
 \end{description}
 
 \subsection{Event Driven Functions}
@@ -848,7 +855,7 @@ The following functions allow manual control of a train event's existence in the
 \item[\hspace{1cm}Pre:] The trainEvent must exist.
 \item[\hspace{1cm}Post:] The trainEvent will be removed from the observer. No op if it was not registered in it.
 \paragraph{Description}
-The observer will watch the \LC, and when any of its registered trainEvents' condition functions return true, it will spawn a new thread to execute their event function. This is required to be run in a new thread so as not to block other events from occuring. No event's execute function shall be running more than once at a time. If the count was set by the user to zero, it shall never be automatically removed. If the count was set to a positive integer, the event shall decriment its count every time its event occurs. When it reaches zero, it is automatically unregistered. The observer shall check these no more frequently than 0.1 seconds.
+The observer will watch the \LC, and when any of its registered trainEvents' condition functions return true, it will spawn a new thread to execute their event function. This is required to be run in a new thread so as not to block other events from occuring. No event's execute function shall be running more than once at a time. If the count was set by the user to zero, it shall never be automatically removed. If the count was set to a positive integer, the event shall decriment its count every time its event occurs. When it reaches zero, it is automatically unregistered. The observer shall check these no more frequently than ten times per second.
 These functions are non-blocking and shall return immediately.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
