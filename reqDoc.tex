@@ -721,20 +721,11 @@ The following functions allow manual control of a train event's existence in the
 \begin{description}
 \item[\hspace{1cm}Pre:] The trainEvent does not exist.
 \item[\hspace{1cm}Post:] The trainEvent exists.
-\item[\hspace{1cm}Example:]
-\begin{verbatim}
-
-    tEV = trainEvent(t.occupies(t, 1), slowDown, 0)
-\end{verbatim}
 \end{description}
 \subparagraph{register}
 \begin{description}
 \item[\hspace{1cm}Pre:] The trainEvent must exist.
 \item[\hspace{1cm}Post:] The trainEvent will be registered in the observer. No op if it already existed in it.
-\begin{verbatim}
-
-    tEv.register()
-\end{verbatim}
 \end{description}
 
 \subparagraph{unregister}
@@ -744,7 +735,25 @@ The following functions allow manual control of a train event's existence in the
 \paragraph{Description}
 The observer will watch the \LC, and when any of its registered trainEvents' condition functions return true, it will spawn a new thread to execute their event function. This is required to be run in a new thread so as not to block other events from occuring. No event's execute function shall be running more than once at a time. If the count was set by the user to zero, it shall never be automatically removed. If the count was set to a positive integer, the event shall decriment its count every time its event occurs. When it reaches zero, it is automatically unregistered. The observer shall check these no more frequently than 0.1 seconds.
 These functions are non-blocking and shall return immediately.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+
+# Get the sections on the bridge(s)
+bridgeLoc = []
+bridgeLoc.append(track.getLocation(5, 6))
+bridgeLoc.append(track.getLocation(10, 11, 12))
+bridgeLoc.append(track.getLocation(22, 23))
+
+# let t be some list of all the trains we want to slow down for bridges
+for t in trains:
+    # Loop over all bridge sections and slow the train at all bridge sections
+    for l in bridgeLoc:
+        tEv = trainEvent(t.occupies(t, l), slowDown, 0)
+        tEv.register()
+\end{verbatim}
 \end{description}
+
 
 \subsection{High Level Functions}
 These functions are more ambitious, and should only be attempted after all the previously defined functions have been defined.
