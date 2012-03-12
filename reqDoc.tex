@@ -40,7 +40,6 @@ We would like to create a scripting language that anybody can use to program hig
 \paragraph{\CS} This refers to the AdaRail program which works between the virtual throttles (such as our Scripting Language) and the track itself. This is the program our library will directly communicate with.
 \paragraph{\LC} Our library shall have a thread which listens to all messages, and update a local copy of the train states. For accessor functions, this local copy can be the one read.
 \paragraph{\TN} The track can be thought of as a complex graph of sensors and switches. We refer to either as \TN{}s.
-\subsection{References}
 
 \newpage
 \subsection{Scope}
@@ -106,7 +105,7 @@ The train object shall be constructable by users.
 The train object shall be either constructed by the user manually and sent to the \CS, or it shall be constructed by the getTrains function from its data received from the \CS. This data should be either private or protected.
 \begin{itemize}
 \item A unique identifier, which shall be the same ID as is used in the \CS.
-\item The location of the train, given in an array of sensors. All the sensors underneath the train, plus those immediately in front of and behind the train shall be included in this array. 
+\item The location of the train, given in an array of sensors. All the sensors underneath the train, plus those immediately in front of and behind the train shall be included in this array.
 \item A power level for the current speed the train is moving
 \item trainState
 \item The direction the train is moving
@@ -568,7 +567,7 @@ The switch object shall be accessible by the following functions.
 
 
 \subsubsection{Location}
-A location is a user defined aggregate of contiguous sensors. This data should be either private or protected. 
+A location is a user defined aggregate of contiguous sensors. This data should be either private or protected.
 \paragraph{Data}
 \begin{itemize}
 \item An array of sensors.
@@ -633,17 +632,17 @@ The location object shall be accessible by the following functions.
 
 \subparagraph{getSensors}
 \begin{description}
-\item[\hspace{1cm}Pre:] The location must exist. 
+\item[\hspace{1cm}Pre:] The location must exist.
 \item[\hspace{1cm}Post:] Returns the list of sensors in this location.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
-    mySensors = myLocation.getSensors()   
+    mySensors = myLocation.getSensors()
 \end{verbatim}
 \end{description}
 
 \subsubsection{Section}
-Sections are subsets of locations. They must be a pair of adjacent sensors. All of the methods of locations are valid on sections, as well as a few others. This data should be either private or protected. 
+Sections are subsets of locations. They must be a pair of adjacent sensors. All of the methods of locations are valid on sections, as well as a few others. This data should be either private or protected.
 \paragraph{Data}
 \begin{itemize}
 \item Pair of sensors.
@@ -747,7 +746,7 @@ The path object shall be accessible by the following functions.
 \subparagraph{buildPath(sensor a, b, int Flags = default)} Alternative Constructor.
 \begin{description}
 \item[\hspace{1cm}Pre:] The path object does not exist.
-\item[\hspace{1cm}Post:] The path object is created as the list of sensors from sensor a to sensor b. Flags determines how the path will be built - See pathFlags for more details 
+\item[\hspace{1cm}Post:] The path object is created as the list of sensors from sensor a to sensor b. Flags determines how the path will be built - See pathFlags for more details
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
@@ -865,7 +864,6 @@ These functions are non-blocking and shall return immediately.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
-
 # Get the sections on the bridge(s)
 bridgeLoc = []
 bridgeLoc.append(track.getLocation(5, 6))
@@ -877,17 +875,64 @@ for t in trains:
     # Loop over all bridge sections and slow the train at all bridge sections
     for l in bridgeLoc:
         tEv = trainEvent(t.occupies(t, l), slowDown, 0)
+        # assume functions are define.
         tEv.register()
 \end{verbatim}
 \end{description}
 
 
 \subsection{High Level Functions}
-These functions are more ambitious, and should only be attempted after all the previously defined functions have been defined.
-\paragraph{train.getVelocity} Pre: Train object must exist. Post: Returns velocity in m/s or cm/s. Will have to do so using knowledge of the track length and time between sensors firing.
-\paragraph{train.goTo(section destination)} Pre: Train object must exist. Post: Train shall take the shortest path which is unblocked to the specified section, where it shall stop. This function blocks control until it has reached this destination. This will require a dynamic algorithm which can take into account which sections are blocked and other moving trains.
-\paragraph{train.followPath(list nodes)} Pre: Train and nodes must exist. Post: Train takes the shortest path from each node to the next until the final node, when it stops. This can be thought of as a repeated calling of the goTo function. This function blocks control until it has reached the final destination.
-\paragraph{getPath(s1, s2)} Pre: The track must exist.  Post: Returns the shortest logal distance from s1 to s2 with no double back (possibly reverse).
+These functions are more ambitious, and should only be attempted after all the previously defined functions have been implemented.
+\paragraph{train.getVelocity}
+\begin{description}
+\item[\hspace{1cm}Pre:] Train object must exist.
+\item[\hspace{1cm}Post:] Returns velocity in m/s or cm/s. Will have to do so using knowledge of the track length and time between sensors firing.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    vel = t1.getVelocity()
+\end{verbatim}
+\end{description}
+
+\paragraph{train.goTo(sensor destination)}
+\begin{description}
+\item[\hspace{1cm}Pre:] Train object must exist.
+\item[\hspace{1cm}Post:] Train shall take the shortest path which is unblocked to the specified sensor, where it shall stop. This function blocks control until it has reached this destination. This will require a dynamic algorithm which can take into account which sections are blocked and other moving trains.
+\begin{verbatim}
+
+    mountain = 34 # the mountain sensor.
+    train1.goTo(mountain)
+\end{verbatim}
+\end{description}
+
+\paragraph{train.followPath(list nodes)}
+\begin{description}
+\item[\hspace{1cm}Pre:] Train and nodes must exist.
+\item[\hspace{1cm}Post:] Train takes the shortest path from each node to the next until the final node, when it stops. This can be thought of as a repeated calling of the goTo function. This function blocks control until it has reached the final destination.
+\item[\hspace{1cm}Example:]
+
+\begin{verbatim}
+
+    riverPath = [12, 45, 57]
+    train1.followPath(riverPath)
+\end{verbatim}
+
+\end{description}
+
+
+\paragraph{getPath(s1, s2)}
+\begin{description}
+\item[\hspace{1cm}Pre:] The track must exist.
+
+\item[\hspace{1cm}Post:] Returns the shortest logal distance from s1 to s2 with no double back (possibly reverse).
+\item[\hspace{1cm}Example:]
+
+\begin{verbatim}
+
+    track.getPath(45, 56)
+\end{verbatim}
+
+\end{description}
 
 \newpage
 \section{External Interface Requirements}
