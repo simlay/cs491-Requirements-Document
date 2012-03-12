@@ -95,10 +95,10 @@ All of these objects will exist in the \LC. Their accessors will access the \LC 
 \subsubsection{Train}
 The train object shall be constructable by users.
 \paragraph{Data}
-The train object shall be either constructed by the user manually and sent to the \CS, or it shall be constructed by the getTrains function from its data received from the \CS.
+The train object shall be either constructed by the user manually and sent to the \CS, or it shall be constructed by the getTrains function from its data received from the \CS. This data should be either private or protected.
 \begin{itemize}
 \item A unique identifier, which shall be the same ID as is used in the \CS.
-\item The location of the train, given in an array of sensors. All the sensors underneath the train, plus those immediately in front of and behind the train shall be included in this array. Important: Direction is dependant in the order of this list. This list shall be in front to back order for the physical train.
+\item The location of the train, given in an array of sensors. All the sensors underneath the train, plus those immediately in front of and behind the train shall be included in this array. 
 \item A power level for the current speed the train is moving
 \item trainState
 \item The direction the train is moving
@@ -347,7 +347,7 @@ The train object shall be accessible by the following functions.
 \end{description}
 
 \subsubsection{Track}
-The track object shall be either constructed by reading the XML file and sent to the \CS, or it shall be constructed by the getTrackState function from its data received from the \CS.
+The track object shall be either constructed by reading the XML file and sent to the \CS, or it shall be constructed by the getTrackState function from its data received from the \CS. This data should be either private or protected.
 Note: This is a global object of which only one may exist. The global variable `track' is reserved for this.
 \paragraph{Data}
 The train object shall contain the following data. It is a graph-like abstraction of the topology.
@@ -404,7 +404,7 @@ The track object shall be accessible by the following functions.
 
 
 \subsubsection{Sensor}
-The sensor objects are created upon the construction of a track. They are not constructable by a user. Sensors represent a \TN in the track graph.
+The sensor objects are created upon the construction of a track. They are not constructable by a user. Sensors represent a \TN in the track graph. This data should be either private or protected.
 \paragraph{Data}
 \begin{itemize}
 \item A unique identifier, which shall be the same ID from the XML file.
@@ -454,7 +454,7 @@ The sensor object shall be accessible by the following functions.\\
 
 
 \subsubsection{Switch}
-The switch objects are created upon the construction of a track. They are not constructable by a user. Switches represent a \TN in the track graph.
+The switch objects are created upon the construction of a track. They are not constructable by a user. Switches represent a \TN in the track graph. This data should be either private or protected.
 \paragraph{Data}
 \begin{itemize}
 \item A unique identifier, which shall be the same ID from the XML file.
@@ -545,7 +545,7 @@ The switch object shall be accessible by the following functions.
 %\subparagraph{setState(closed, thrown, or moving)} Pre: The switch object must exist. Post: A message is sent to the \CS setting the current state of the switch to that which was given.
 
 \subsubsection{Location}
-A location is a user defined aggregate of contiguous sensors.
+A location is a user defined aggregate of contiguous sensors. This data should be either private or protected. 
 \paragraph{Data}
 \begin{itemize}
 \item An array of sensors.
@@ -604,7 +604,7 @@ The location object shall be accessible by the following functions.
 \end{description}
 
 \subsubsection{Section}
-Sections are subsets of locations. They must be a pair of adjacent sensors. All of the methods of locations are valid on sections, as well as a few others.
+Sections are subsets of locations. They must be a pair of adjacent sensors. All of the methods of locations are valid on sections, as well as a few others. This data should be either private or protected. 
 \paragraph{Data}
 \begin{itemize}
 \item Pair of sensors.
@@ -681,7 +681,7 @@ The section object shall be accessible by the following functions.
 
 
 \subsubsection{Path}
-A path is a user defined aggregate of contiguous sensors. Although it has the same data as a location, it has different real-world meaning, and its functions are different.
+A path is a user defined aggregate of contiguous sensors. Although it has the same data as a location, it has different real-world meaning, and its functions are different. This data should be protected or private.
 \paragraph{Data}
 \begin{itemize}
 \item An array of sensors.
@@ -757,8 +757,6 @@ These functions are more ambitious, and should only be attempted after all the p
 \newpage
 \section{Non-Functional Requirements}
 \subsection{Performance Requirements}
-
-\subsection{Security Requirements}
 
 \subsection{Safety Requirements}
 The \TSL may interface only with the \CS. It may not talk directly to the Loco Buffer Server, as this would be a high risk environment for scripting. A bug in a script may frequently cause collisions or derailments, so we are disallowing this case entirely.
