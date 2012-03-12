@@ -161,7 +161,7 @@ The train object shall be accessible by the following functions.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
-	myPower = train1.getPower()
+    myPower = train1.getPower()
 \end{verbatim}
 \end{description}
 
@@ -173,7 +173,7 @@ The train object shall be accessible by the following functions.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
-	train1.setPower(100)
+    train1.setPower(100)
 \end{verbatim}
 \end{description}
 
@@ -453,27 +453,134 @@ A location is a user defined aggregate of contiguous sensors.
 \end{itemize}
 \paragraph{Functions}
 The location object shall be accessible by the following functions.
-\subparagraph{location(list sensors)} Constructor. Pre: The location object does not exist. Post: The location object is created as the space between the provided sensors. An exception is raised if they are not adjacent.
-\subparagraph{getLength} Pre: The location must exist. Post: Returns the length of the location.
-\subparagraph{getOwner} Pre: The location must exist. Post: Returns a list of references to the trains who occupy any part of this location. Returns null if the entire location is unowned.
-\subparagraph{getSwitches} Pre: The location must exist.  Post: Returns the list of switches in this location.
-\subparagraph{getSections} Pre: The location must exist.  Post: Returns the list of sections in this location.
+
+\subparagraph{location(list sensors)} Constructor. 
+\begin{description}
+\item[\hspace{1cm}Pre:] The location object does not exist.
+\item[\hspace{1cm}Post:] The location object is created as the space between the provided sensors. An exception is raised if they are not adjacent.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+    myLocation = location(mySensors)    #List of sensor objects
+\end{verbatim}
+\end{description}
+
+\subparagraph{getLength} 
+\begin{description}
+\item[\hspace{1cm}Pre:] The location must exist.
+\item[\hspace{1cm}Post:] Returns the length of the location.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+    length = myLocation.getLength()
+\end{verbatim}
+\end{description}
+
+\subparagraph{getOccupant}
+\begin{description}
+\item[\hspace{1cm}Pre:] The location must exist. 
+\item[\hspace{1cm}Post:] Returns a list of references to the trains who occupy any part of this location. Returns null if the entire location is unoccupied.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+    myOccupant = myLocation.getOccupant()
+\end{verbatim}
+\end{description}
+
+\subparagraph{getSwitches}
+\begin{description}
+\item[\hspace{1cm}Pre:] The location must exist.
+\item[\hspace{1cm}Post:] Returns the list of switches in this location.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+    mySwitches = myLocation.getSwitches()   
+\end{verbatim}
+\end{description}
+
+\subparagraph{getSections}
+\begin{description}
+\item[\hspace{1cm}Pre:] The location must exist. 
+\item[\hspace{1cm}Post:] Returns the list of sections in this location.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+    mySections = myLocation.getSections()   
+\end{verbatim}
+\end{description}
 
 \subsubsection{Section}
 Sections are subsets of locations. They must be a pair of adjacent sensors. All of the methods of locations are valid on sections, as well as a few others.
 \paragraph{Data}
 \begin{itemize}
+ca
 \item Pair of sensors.
 \end{itemize}
 \paragraph{Functions}
 The section object shall be accessible by the following functions.
-\subparagraph{section(sensor a, b)} Constructor. Pre: The section does not exist. Post: A section object is created as the space between the pair of sensor ends. An exception is raised if they are not adjacent.
-\subparagraph{prepare} Pre: The section must exist. Post: Any switches within this section are thrown or closed such that a train may travel between the section's pair of sensors. An exception is raised if \CS prevents the operation.
-\subparagraph{isPrepared} Pre: The section must exist. Post: Returns true or false if a the switches within this section are situated to allow travel from this section's pair of sensors.
-\subparagraph{getLength} Pre: The section must exist. Post: Returns the length of the section.
-\subparagraph{getOwner} Pre: The section must exist. Post: Returns a reference to the train who occupies this section. Returns null if the section is unowned.
-\subparagraph{getSwitches} Pre: The section must exist. Post: Returns the list of switches in this section.
-\subparagraph{getSections} Pre: The section must exist. Post: Returns the list of sections in this section.
+\subparagraph{section(sensor a, b)} Constructor.
+\begin{description}
+\item[\hspace{1cm}Pre:] The section does not exist. 
+\item[\hspace{1cm}Post:] A section object is created as the space between the pair of sensor ends. An exception is raised if they are not adjacent.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+    mySection = getSection(sensor1,sensor2)
+\end{verbatim}
+\end{description}
+
+\subparagraph{prepare}
+\begin{description}
+\item[\hspace{1cm}Pre:] The section must exist.
+\item[\hspace{1cm}Post:] Any switches within this section are thrown or closed such that a train may travel between the section's pair of sensors. An exception is raised if \CS prevents the operation.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+    mySection.prepare()
+\end{verbatim}
+\end{description}
+
+\subparagraph{isPrepared}
+\begin{description}
+\item[\hspace{1cm}Pre:] The section must exist.
+\item[\hspace{1cm}Post:] Returns true or false if a the switches within this section are situated to allow travel from this section's pair of sensors.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+    status = mySection.isPrepared()
+\end{verbatim}
+\end{description}
+
+\subparagraph{getLength}
+\begin{description}
+\item[\hspace{1cm}Pre:] The section must exist. 
+\item[\hspace{1cm}Post:] Returns the length of the section.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+    myLength = mySection.getLength()
+\end{verbatim}
+\end{description}
+
+\subparagraph{getOccupant}\begin{description}
+\item[\hspace{1cm}Pre:] The section must exist.
+\item[\hspace{1cm}Post:] Returns a reference to the train who occupies this section. Returns null if the section is unoccupied.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+    occupant = mySection.getOccupant()
+\end{verbatim}
+\end{description}
+
+\subparagraph{getSwitches}\begin{description}
+\item[\hspace{1cm}Pre:] The section must exist.
+\item[\hspace{1cm}Post:] Returns the list of switches in this section.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+    switches = mySection.getSwitches()
+\end{verbatim}
+\end{description}
+
+\subparagraph{getSpeedLimit}
+\begin{description}
+\item[\hspace{1cm}Pre:] The section must exist.
+\item[\hspace{1cm}Post:] Returns the speed of this section.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+    speedLimit = mySection.getSpeedLimit()
+\end{verbatim}
+\end{description}
+
 
 \subsubsection{Path}
 A path is a user defined aggregate of contiguous sensors. Although it has the same data as a location, it has different real-world meaning, and its functions are different.
@@ -533,7 +640,7 @@ These functions are more ambitious, and should only be attempted after all the p
 \subsection{Control Program}
     There shall be one or more threads which intaract between the control session and the current train script instance.
 \subsection{Train Topology}
-	XML Document.
+    XML Document.
 
 \newpage
 \section{Additions to Current Software}
@@ -541,7 +648,7 @@ These functions are more ambitious, and should only be attempted after all the p
 \subsection{Design Constraints}
 \subsection{Control Program}
     A messaging protocol between ``virtual'' remotes the control program shall be added.  This protocol is simply for initializing the train and knowing if the loco buffer server is running. The getTrainState and getTrackState functions will need a new message to ask the \CS for data, and a new one to receieve said data.
-	Some methodology for exceptions must be added to \CS as well. This should be used sparingly, as we do not want to add very many new functions to the \CS. One example where it is necessary is the train constructor. If the train cannot be get/set, an error message should be sent back.
+    Some methodology for exceptions must be added to \CS as well. This should be used sparingly, as we do not want to add very many new functions to the \CS. One example where it is necessary is the train constructor. If the train cannot be get/set, an error message should be sent back.
 \subsection{XML Specification}
     The list of additions to the XML specification is:
 \begin{enumerate}
@@ -561,9 +668,9 @@ Future releases may include these features or others, so design must be portable
 \subsection{Front End}
 The \TSL we have specified is powerful, but some features such as those using higher order functions will lack clarity and intuitivity. A front end may come in any of the following flavors, or a combination of them.
 \begin{enumerate}
-	\item Graphical User Interface. A GUI could be added on top which may have a visual representation of the entire track system, displaying data from \LC in real time. It should have an ability to load scripts or an interactive scripting interface.
-	\item Scripting Wrapper. As mentioned earlier, some aspects of this library will be less than ideal syntactically. This wrapper could translate higher level human language into something the \TSL can understand.
-	\item Web Interface. A concurrent project is building a web throttle, and perhaps the \TSL could be incorporated into this later.
+    \item Graphical User Interface. A GUI could be added on top which may have a visual representation of the entire track system, displaying data from \LC in real time. It should have an ability to load scripts or an interactive scripting interface.
+    \item Scripting Wrapper. As mentioned earlier, some aspects of this library will be less than ideal syntactically. This wrapper could translate higher level human language into something the \TSL can understand.
+    \item Web Interface. A concurrent project is building a web throttle, and perhaps the \TSL could be incorporated into this later.
 \end{enumerate}
 \subsection{Speed Limits}
 Speed limits between sensors could be added to the XML Documents, and the \TSL should enforce them. This is a feature that would have to be specified in detail when implemented. Likely, the user could toggle enforcement on and off, and when active it would send messages to the \CS slowing trains down if they enter a section which has a speed limit lower than the desired speed of the train.
@@ -615,10 +722,10 @@ trains = getTrains();
 # define the function that will be called when event occurs
 def slowDown(train t, location l):
     s = t.getSpeed()
-	if (s > 25):
-		t.setSpeed(25)
-		waitUntil(t.occupies(l))
-		t.setSpeed(s)
+    if (s > 25):
+        t.setSpeed(25)
+        waitUntil(t.occupies(l))
+        t.setSpeed(s)
 
 # Get the sections on the bridge(s)
 bridgeLoc = []
@@ -628,10 +735,10 @@ bridgeLoc.append(track.getLocation(22, 23))
 
 # let t be some list of all the trains we want to slow down for bridges
 for t in trains:
-	# Loop over all bridge sections and slow the train at all bridge sections
-	for l in bridgeLoc:
-		tEv = trainEvent(t.occupies(t, l), slowDown, 0);
-		tEv.register()
+    # Loop over all bridge sections and slow the train at all bridge sections
+    for l in bridgeLoc:
+        tEv = trainEvent(t.occupies(t, l), slowDown, 0);
+        tEv.register()
 
 #from now on, these train events will ensure that trains crossing bridges are slowed down!
 
@@ -648,7 +755,7 @@ mountains = track.getSection(35)
 
 # define the function we would like to register
 def atMountains():
-	train1.hornOn(5) # Duration = 5 secs
+    train1.hornOn(5) # Duration = 5 secs
     train1.reverseDirection()
 
 #here we tell the event handler to only register this function for 5 minutes.
