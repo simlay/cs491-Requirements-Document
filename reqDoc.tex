@@ -84,7 +84,15 @@ The initialization functions shall start several background threads. A great dea
 \item moving
 \end{itemize}
 \subsection{Classes in Library}
-All of these objects will exist in the \LC. Their accessors will access the \LC for all information, and the setters will send messages to the \CS. This data must be in one central location so the background threads can watch and set it.
+All of these objects will exist in the \LC. Their accessors will access the \LC for all information, and the setters will send messages to the \CS. This data must be in one central location so the background threads can watch and set it. \\ \\
+All classes should have a string representation for output (debugging, etc).\\
+This can be achieved in python with a \verb!__repr__! function in each class. To use it, call \verb!str(object)! for the object to display.
+\begin{verbatim}
+class Foo:
+    def __repr__(self):
+        return 'This is what I look like'
+\end{verbatim}
+
 \subsubsection{Train}
 The train object shall be constructable by users.
 \paragraph{Data}
@@ -405,8 +413,8 @@ The sensor objects are created upon the construction of a track. They are not co
 \item The distance to the previous adjacent \TN.
 \end{itemize}
 \paragraph{Functions}
-The sensor object shall be accessible by the following functions.\\
-%All examples will assume a sensor object, $mySensor=getSensor(7)$, exists.
+The sensor object shall be accessible by the following functions.
+
 \subparagraph{getID}
 \begin{description}
 \item[\hspace{1cm}Pre:] The sensor object must exist.
@@ -419,7 +427,7 @@ The sensor object shall be accessible by the following functions.\\
 \end{verbatim}
 \end{description}
 
-\subparagraph{getDistanceNext}
+\subparagraph{getNext}
 \begin{description}
 \item[\hspace{1cm}Pre:] The sensor object must exist.
 \item[\hspace{1cm}Post:] Returns next \TN.
@@ -431,7 +439,7 @@ The sensor object shall be accessible by the following functions.\\
 \end{verbatim}
 \end{description}
 
-\subparagraph{getDistancePrev}
+\subparagraph{getPrev}
 \begin{description}
 \item[\hspace{1cm}Pre:] The sensor object must exist.
 \item[\hspace{1cm}Post:] Returns previous \TN.
@@ -485,7 +493,7 @@ The switch object shall be accessible by the following functions.
 \end{verbatim}
 \end{description}
 
-\subparagraph{getClosedNode}
+\subparagraph{getClosed}
 \begin{description}
 \item[\hspace{1cm}Pre:] The switch object must exist.
 \item[\hspace{1cm}Post:] Returns the \TN along the closed path of the switch.
@@ -497,7 +505,7 @@ The switch object shall be accessible by the following functions.
 \end{verbatim}
 \end{description}
 
-\subparagraph{getThrownNode}
+\subparagraph{getThrown}
 \begin{description}
 \item[\hspace{1cm}Pre:] The switch object must exist.
 \item[\hspace{1cm}Post:] Returns the \TN along the open path of the switch.
@@ -509,7 +517,7 @@ The switch object shall be accessible by the following functions.
 \end{verbatim}
 \end{description}
 
-\subparagraph{getNarrowNode}
+\subparagraph{getNarrow}
 \begin{description}
 \item[\hspace{1cm}Pre:] The switch object must exist.
 \item[\hspace{1cm}Post:] Returns the \TN along the narrow (opposite the closed/open side) path of the switch.
@@ -528,12 +536,23 @@ The switch object shall be accessible by the following functions.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
-    
+    mySwitch = getSwitch (3)
+    mySwitch.Throw()
 \end{verbatim}
 \end{description}
 
-\subparagraph{Close} Pre: The switch must exist.  Post:  A message is sent to the \CS setting the current state of the switch to Closed. Exception will be raised if the \CS prevents the operation (possibly due to ownership of section).
-%\subparagraph{setState(closed, thrown, or moving)} Pre: The switch object must exist. Post: A message is sent to the \CS setting the current state of the switch to that which was given.
+\subparagraph{Close}
+\begin{description}
+\item[\hspace{1cm}Pre:] The switch must exist.
+\item[\hspace{1cm}Post:] A message is sent to the \CS setting the current state of the switch to Closed. Exception will be raised if the \CS prevents the operation (possibly due to ownership of section).
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    mySwitch = getSwitch (3)
+    mySwitch.Close()
+\end{verbatim}
+\end{description}
+
 
 \subsubsection{Location}
 A location is a user defined aggregate of contiguous sensors.
@@ -695,7 +714,28 @@ Users will need to be able to initialize the \CS, or get data from it if it is r
 \paragraph{Alternative to initialization} getTrainState and getTrackState (see Train and Track classes) can be called if the \CS is already running to initialize the \LC.
 \subsubsection{More Functions}
 These are the remaining standard functions in the library.
-\paragraph{stopAllTrains(list trains)} Pre: None. Post: Stops all trains specified immediately. If list is empty, then all trains in the system are stopped immediately.
+\paragraph{stopTrains(list trains)}
+\begin{description}
+\item[\hspace{1cm}Pre:] None.
+\item[\hspace{1cm}Post:] Stops all trains specified immediately. If list is empty, then all trains in the system are stopped immediately.
+\end{description}
+
+\paragraph{getDistance(node n1, node n2, [flags])}
+\begin{description}
+\item[\hspace{1cm}Pre:] Both nodes must exist.
+\item[\hspace{1cm}Post:] Returns the distance along the track between the nodes.
+\item[\hspace{1cm}Flags:]
+\begin{description}
+\item{DISTANCE}
+\end{description}
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    
+\end{verbatim}
+\end{description}
+
+
 \subsubsection{waitUntil(function cond)} Pre: None. Post: Control is blocked until function cond returns true. Polling time shall be no more frequent than 0.1 seconds.
 
 \subsection{Event Driven Functions}
