@@ -40,7 +40,6 @@ We would like to create a scripting language that anybody can use to program hig
 \paragraph{\CS} This refers to the AdaRail program which works between the virtual throttles (such as our Scripting Language) and the track itself. This is the program our library will directly communicate with.
 \paragraph{\LC} Our library shall have a thread which listens to all messages, and update a local copy of the train states. For accessor functions, this local copy can be the one read.
 \paragraph{\TN} The track can be thought of as a complex graph of sensors and switches. We refer to either as \TN{}s.
-\subsection{References}
 
 \newpage
 \subsection{Scope}
@@ -594,14 +593,14 @@ The location object shall be accessible by the following functions.
 \end{verbatim}
 \end{description}
 
-\subparagraph{getOccupant}
+\subparagraph{getOccupants}
 \begin{description}
 \item[\hspace{1cm}Pre:] The location must exist.
 \item[\hspace{1cm}Post:] Returns a list of references to the trains who occupy any part of this location. Returns null if the entire location is unoccupied.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
-    myOccupant = myLocation.getOccupant()
+    myOccupants = myLocation.getOccupant()
 \end{verbatim}
 \end{description}
 
@@ -802,8 +801,9 @@ These are the remaining standard functions in the library.
 
 \paragraph{getDistance(node n1, node n2, [flags])}
 \begin{description}
-\item[\hspace{1cm}Pre:] Both nodes must exist. (for flags, see '3.3 Enums and Flags')
+\item[\hspace{1cm}Pre:] Both nodes must exist.
 \item[\hspace{1cm}Post:] Returns the distance along the track between the nodes.
+\item[\hspace{1cm}Flags:] By default, evaluates based on shortest distance. (see '3.3 Enums and Flags')
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
@@ -948,6 +948,7 @@ These functions are more ambitious, and should only be attempted after all the p
 \newpage
 \section{Non-Functional Requirements}
 \subsection{Performance Requirements}
+The \TSL shall use multiple threads. None of these threads shall take enough CPU time to interfere with the main control. For example polling time of the train events shall be no more frequent than ten times per second.
 
 \subsection{Safety Requirements}
 The \TSL may interface only with the \CS. It may not talk directly to the Loco Buffer Server, as this would be a high risk environment for scripting. A bug in a script may frequently cause collisions or derailments, so we are disallowing this case entirely.
