@@ -101,9 +101,9 @@ The train object shall be either constructed by the user manually and sent to th
 \end{itemize}
 \paragraph{Functions}
 The train object shall be accessible by the following functions.
-\subparagraph{train(integer id, int length, location loc)} Constructor. 
+\subparagraph{train(integer id, int length, location loc)} Constructor.
 \begin{description}
-\item[\hspace{1cm}Pre:] The train object does not exist. 
+\item[\hspace{1cm}Pre:] The train object does not exist.
 \item[\hspace{1cm}Post:] The train object exists, and it is either ``set'' or ``stolen'' through the \CS. The \CS will know where it is located based on the input, and the physical train is expected to be halted at initialization. If the ID is invalid for the \CS, an exception shall be sent back.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
@@ -113,10 +113,10 @@ The train object shall be accessible by the following functions.
 \end{verbatim}
 \end{description}
 
-\subparagraph{getTrains} Alternative multi-constructor. 
+\subparagraph{getTrains} Alternative multi-constructor.
 \subparagraph{getID}
 \begin{description}
-\item[\hspace{1cm}Pre:] The train objects do not exist. 
+\item[\hspace{1cm}Pre:] The train objects do not exist.
 \item[\hspace{1cm}Post:] Train objects are created from the data received from the \CS by making a request for said data. An exception is raised if the \CS is not running. A list of all the train objects is returned.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
@@ -126,7 +126,7 @@ The train object shall be accessible by the following functions.
 \end{description}
 
 \begin{description}
-\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Pre:] The train object must exist.
 \item[\hspace{1cm}Post:] Returns the unique identifier of the train. (\CS id)
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
@@ -135,9 +135,9 @@ The train object shall be accessible by the following functions.
 \end{verbatim}
 \end{description}
 
-\subparagraph{getLocation} 
+\subparagraph{getLocation}
 \begin{description}
-\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Pre:] The train object must exist.
 \item[\hspace{1cm}Post:] Returns the array of sensors the train is occupying.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
@@ -147,9 +147,9 @@ The train object shall be accessible by the following functions.
 \end{description}
 
 
-\subparagraph{occupies(location l)} 
+\subparagraph{occupies(location l)}
 \begin{description}
-\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Pre:] The train object must exist.
 \item[\hspace{1cm}Post:] Returns true or false if any part of the train's location intersects with location l.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
@@ -159,9 +159,9 @@ The train object shall be accessible by the following functions.
 \end{verbatim}
 \end{description}
 
-\subparagraph{getPower} 
+\subparagraph{getPower}
 \begin{description}
-\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Pre:] The train object must exist.
 \item[\hspace{1cm}Post:] Returns the current power level of the train.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
@@ -171,7 +171,7 @@ The train object shall be accessible by the following functions.
 \end{description}
 
 
-\subparagraph{setPower(integer p)} 
+\subparagraph{setPower(integer p)}
 \begin{description}
 \item[\hspace{1cm}Pre:] The train object must exist.
 \item[\hspace{1cm}Post:] A message is sent to the \CS setting the current power level of the train to that which was given.
@@ -182,20 +182,20 @@ The train object shall be accessible by the following functions.
 \end{verbatim}
 \end{description}
 
-\subparagraph{getDirection} 
+\subparagraph{getDirection}
 \begin{description}
-\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Pre:] The train object must exist.
 \item[\hspace{1cm}Post:] Returns the current direction of the train (see 'direction' enum).
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
-	myDir = train1.getDirection()    
+	myDir = train1.getDirection()
 \end{verbatim}
 \end{description}
 
-\subparagraph{setDirection(direction d)} 
+\subparagraph{setDirection(direction d)}
 \begin{description}
-\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Pre:] The train object must exist.
 \item[\hspace{1cm}Post:] A message is sent to the \CS setting the current direction of the train to that which was given (see 'direction' enum).
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
@@ -206,7 +206,7 @@ The train object shall be accessible by the following functions.
 
 \subparagraph{getLights}
 \begin{description}
-\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Pre:] The train object must exist.
 \item[\hspace{1cm}Post:] Returns whether or not the lights are on.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
@@ -216,7 +216,7 @@ The train object shall be accessible by the following functions.
 \end{verbatim}
 \end{description}
 
-\subparagraph{setLights(boolean l)} 
+\subparagraph{setLights(boolean l)}
 \begin{description}
 \item[\hspace{1cm}Pre:] The train object must exist.
 \item[\hspace{1cm}Post:] A message is sent to the \CS setting the current state of the lights to on or off based on input.
@@ -227,9 +227,9 @@ The train object shall be accessible by the following functions.
 \end{verbatim}
 \end{description}
 
-\subparagraph{getBell} 
+\subparagraph{getBell}
 \begin{description}
-\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Pre:] The train object must exist.
 \item[\hspace{1cm}Post:] Returns whether or not the bell is on.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
@@ -239,9 +239,9 @@ The train object shall be accessible by the following functions.
 \end{verbatim}
 \end{description}
 
-\subparagraph{setBell(boolean l)} 
+\subparagraph{setBell(boolean l)}
 \begin{description}
-\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Pre:] The train object must exist.
 \item[\hspace{1cm}Post:] A message is sent to the \CS setting the current state of the bell to on or off based on input.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
@@ -250,9 +250,9 @@ The train object shall be accessible by the following functions.
 \end{verbatim}
 \end{description}
 
-\subparagraph{soundHorn} 
+\subparagraph{soundHorn}
 \begin{description}
-\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Pre:] The train object must exist.
 \item[\hspace{1cm}Post:] A message is sent to the \CS that the train should sound its horn. The horn is a pulse, so there is no getter for this. (It has no state).
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
@@ -261,9 +261,9 @@ The train object shall be accessible by the following functions.
 \end{verbatim}
 \end{description}
 
-\subparagraph{mute} 
+\subparagraph{mute}
 \begin{description}
-\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Pre:] The train object must exist.
 \item[\hspace{1cm}Post:] A message is sent to the \CS that the train should mute its sound.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
@@ -272,9 +272,9 @@ The train object shall be accessible by the following functions.
 \end{verbatim}
 \end{description}
 
-\subparagraph{unmute} 
+\subparagraph{unmute}
 \begin{description}
-\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Pre:] The train object must exist.
 \item[\hspace{1cm}Post:] A message is sent to the \CS that the train should unmute its sound.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
@@ -283,9 +283,9 @@ The train object shall be accessible by the following functions.
 \end{verbatim}
 \end{description}
 
-\subparagraph{getSwitchInFront} 
+\subparagraph{getSwitchInFront}
 \begin{description}
-\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Pre:] The train object must exist.
 \item[\hspace{1cm}Post:] Returns a reference to the switch which is closest to the train in front of it. The front is determined by direction of movement, not the engine of the train.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
@@ -294,9 +294,9 @@ The train object shall be accessible by the following functions.
 \end{verbatim}
 \end{description}
 
-\subparagraph{getHeadSensor} 
+\subparagraph{getHeadSensor}
 \begin{description}
-\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Pre:] The train object must exist.
 \item[\hspace{1cm}Post:] Returns a reference to the sensor in the front of this train's location. The front is determined by direction of movement, not the engine of the train.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
@@ -305,9 +305,9 @@ The train object shall be accessible by the following functions.
 \end{verbatim}
 \end{description}
 
-\subparagraph{stop} 
+\subparagraph{stop}
 \begin{description}
-\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Pre:] The train object must exist.
 \item[\hspace{1cm}Post:] A message is sent to the \CS that the train should stop immediately.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
@@ -315,9 +315,9 @@ The train object shall be accessible by the following functions.
 \end{verbatim}
 \end{description}
 
-\subparagraph{getState} 
+\subparagraph{getState}
 \begin{description}
-\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Pre:] The train object must exist.
 \item[\hspace{1cm}Post:] A trainState (enum defined prior) is returned for which state the train is in.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
@@ -325,9 +325,9 @@ The train object shall be accessible by the following functions.
 \end{verbatim}
 \end{description}
 
-\subparagraph{follow(int power, Path p)} 
+\subparagraph{follow(int power, Path p)}
 \begin{description}
-\item[\hspace{1cm}Pre:] Train and path objects must exist. The start of the path must be the same section as the front of the train occupies. 
+\item[\hspace{1cm}Pre:] Train and path objects must exist. The start of the path must be the same section as the front of the train occupies.
 \item[\hspace{1cm}Post:] Train will follow the path. This is a blocking operation. An exception is raised if the train is put into a blocking state.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
@@ -528,7 +528,7 @@ The switch object shall be accessible by the following functions.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
-    
+
 \end{verbatim}
 \end{description}
 
@@ -544,7 +544,7 @@ A location is a user defined aggregate of contiguous sensors.
 \paragraph{Functions}
 The location object shall be accessible by the following functions.
 
-\subparagraph{location(list sensors)} Constructor. 
+\subparagraph{location(list sensors)} Constructor.
 \begin{description}
 \item[\hspace{1cm}Pre:] The location object does not exist.
 \item[\hspace{1cm}Post:] The location object is created as the space between the provided sensors. An exception is raised if they are not adjacent.
@@ -554,7 +554,7 @@ The location object shall be accessible by the following functions.
 \end{verbatim}
 \end{description}
 
-\subparagraph{getLength} 
+\subparagraph{getLength}
 \begin{description}
 \item[\hspace{1cm}Pre:] The location must exist.
 \item[\hspace{1cm}Post:] Returns the length of the location.
@@ -566,7 +566,7 @@ The location object shall be accessible by the following functions.
 
 \subparagraph{getOccupant}
 \begin{description}
-\item[\hspace{1cm}Pre:] The location must exist. 
+\item[\hspace{1cm}Pre:] The location must exist.
 \item[\hspace{1cm}Post:] Returns a list of references to the trains who occupy any part of this location. Returns null if the entire location is unoccupied.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
@@ -580,17 +580,17 @@ The location object shall be accessible by the following functions.
 \item[\hspace{1cm}Post:] Returns the list of switches in this location.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
-    mySwitches = myLocation.getSwitches()   
+    mySwitches = myLocation.getSwitches()
 \end{verbatim}
 \end{description}
 
 \subparagraph{getSections}
 \begin{description}
-\item[\hspace{1cm}Pre:] The location must exist. 
+\item[\hspace{1cm}Pre:] The location must exist.
 \item[\hspace{1cm}Post:] Returns the list of sections in this location.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
-    mySections = myLocation.getSections()   
+    mySections = myLocation.getSections()
 \end{verbatim}
 \end{description}
 
@@ -604,7 +604,7 @@ Sections are subsets of locations. They must be a pair of adjacent sensors. All 
 The section object shall be accessible by the following functions.
 \subparagraph{section(sensor a, b)} Constructor.
 \begin{description}
-\item[\hspace{1cm}Pre:] The section does not exist. 
+\item[\hspace{1cm}Pre:] The section does not exist.
 \item[\hspace{1cm}Post:] A section object is created as the space between the pair of sensor ends. An exception is raised if they are not adjacent.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
@@ -634,7 +634,7 @@ The section object shall be accessible by the following functions.
 
 \subparagraph{getLength}
 \begin{description}
-\item[\hspace{1cm}Pre:] The section must exist. 
+\item[\hspace{1cm}Pre:] The section must exist.
 \item[\hspace{1cm}Post:] Returns the length of the section.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
@@ -684,7 +684,6 @@ The path object shall be accessible by the following functions.
 \subparagraph{getSwitches} Pre: The path must exist.  Post: Returns the list of switches along the path.
 \subparagraph{getSections} Pre: The path must exist.  Post: Returns the list of sections along the path.
 
-
 \subsection{Functions in Library}
 These functions are not called on objects, but are first class functions of the library itself.
 
@@ -703,18 +702,40 @@ Event driven functions are encapsulated by a trainEvent class. For management of
 \subsubsection{trainEvent Class}
 \paragraph{Data}
 \begin{itemize}
-\item A function ``condition" which must return a boolean
-\item A function ``event" which must have no return
+\item A function ``condition'' which must return a boolean
+\item A function ``event'' which must have no return
 \item Count for automatic removal ($0 =$ infinite)
 \end{itemize}
 \paragraph{Functions}
 The following functions allow manual control of a train event's existence in the observer.
-\subparagraph{trainEvent(func cond, func event, int count)} Constructor. Pre: The trainEvent does not exist. Post: The trainEvent exists.
-\subparagraph{register} Pre: The trainEvent must exist. Post: The trainEvent will be registered in the observer. No op if it already existed in it.
-\subparagraph{unregister} Pre: The trainEvent must exist. Post: The trainEvent will be removed from the observer. No op if it was not registered in it.
+\subparagraph{trainEvent(func cond, func event, int count)} Constructor.
+\begin{description}
+\item[\hspace{1cm}Pre:] The trainEvent does not exist.
+\item[\hspace{1cm}Post:] The trainEvent exists.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    tEV = trainEvent(t.occupies(t, 1), slowDown, 0)
+\end{verbatim}
+\end{description}
+\subparagraph{register}
+\begin{description}
+\item[\hspace{1cm}Pre:] The trainEvent must exist.
+\item[\hspace{1cm}Post:] The trainEvent will be registered in the observer. No op if it already existed in it.
+\begin{verbatim}
+
+    tEv.register()
+\end{verbatim}
+\end{description}
+
+\subparagraph{unregister}
+\begin{description}
+\item[\hspace{1cm}Pre:] The trainEvent must exist.
+\item[\hspace{1cm}Post:] The trainEvent will be removed from the observer. No op if it was not registered in it.
 \paragraph{Description}
 The observer will watch the \LC, and when any of its registered trainEvents' condition functions return true, it will spawn a new thread to execute their event function. This is required to be run in a new thread so as not to block other events from occuring. No event's execute function shall be running more than once at a time. If the count was set by the user to zero, it shall never be automatically removed. If the count was set to a positive integer, the event shall decriment its count every time its event occurs. When it reaches zero, it is automatically unregistered. The observer shall check these no more frequently than 0.1 seconds.
 These functions are non-blocking and shall return immediately.
+\end{description}
 
 \subsection{High Level Functions}
 These functions are more ambitious, and should only be attempted after all the previously defined functions have been defined.
@@ -826,7 +847,7 @@ bridgeLoc.append(track.getLocation(22, 23))
 for t in trains:
     # Loop over all bridge sections and slow the train at all bridge sections
     for l in bridgeLoc:
-        tEv = trainEvent(t.occupies(t, l), slowDown, 0);
+        tEv = trainEvent(t.occupies(t, l), slowDown, 0)
         tEv.register()
 
 #from now on, these train events will ensure that trains crossing bridges are slowed down!
