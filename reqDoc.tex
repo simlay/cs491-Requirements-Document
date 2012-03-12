@@ -11,7 +11,10 @@
 \usepackage{hyperref}
 
 \def\TSL{Train Scripting Language\xspace}
-\def\CS{Control Progam\xspace} \def\LC{Local Copy of Train State\xspace} \def\TN{Track Node\xspace}
+\def\CS{Control Progam\xspace}
+\def\LC{Local Copy of Train State\xspace}
+\def\TN{Track Node\xspace}
+
 \title{{\bf Software Project Requirements Specification} \\ for \\ {\bf Train Scripting Python Library}}
 \author{Prepared by Alex Wipf, Sebastian Imlay, Max Aussendorf, Paul Sheraton}
 \parskip 7.2pt
@@ -25,7 +28,7 @@
 \newpage
 \section{Introduction}
 \subsection{Vision Statement}
-WE NEED A FORMAL VISION
+For Dr. Martin Osborne, who has requested a language and framework for controlling model trains.  The \TSL is a library that extends the functionality of model train operations to the script writer.  Unlike other libraries for controlling external hardware, the \TSL provides \verb=when <expr> do <statements>= and \verb=wait until <expr>= features to allow for event driven statement blocks.  Our product provides a library implementing low level functionality for manipulating trains as well as higher level functions to allow for a more user friendly scripting experience.
 \subsection{Purpose}
 Creation of a Python library to communicate with the control software for the model train in CF408. This library will allow users to create scripts which can control the trains without human interaction.
 \subsection{Background}
@@ -41,7 +44,8 @@ We would like to create a scripting language that anybody can use to program hig
 
 \newpage
 \subsection{Scope}
-NEED FORMAL SCOPE DEFINITION
+For this project, we provide the library and framework for the \TSL. These features include the underlying functionality needed for initialization, observation and manipulation objects on the track.  This includes throwing and closing of switches, variation of a track and train state.  More higher level functions include a modified Dijkstra's algorithm for determining a path between two locations.  Further expansion of this project would allow for a web interface and possibly a grammar addition to the Python Language for \verb=when <expr> do <statements>= and \verb=wait until <expr>= style syntax.
+
 \subsection{Risk Assessment}
 We have aimed to marginalize risks as much as we can in specification. We have required nothing which cannot be implemented in a Python Library.
 
@@ -97,14 +101,15 @@ The train object shall be either constructed by the user manually and sent to th
 \end{itemize}
 \paragraph{Functions}
 The train object shall be accessible by the following functions.
-\subparagraph{train(integer id, int length, list location)} Constructor. 
+\subparagraph{train(integer id, int length, location loc)} Constructor. 
 \begin{description}
 \item[\hspace{1cm}Pre:] The train object does not exist. 
 \item[\hspace{1cm}Post:] The train object exists, and it is either ``set'' or ``stolen'' through the \CS. The \CS will know where it is located based on the input, and the physical train is expected to be halted at initialization. If the ID is invalid for the \CS, an exception shall be sent back.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
-    myTrain = train(1204, 43, s1, s2, s3, s4)
+	myLoc = location( [ s1, s2, s3, s4 ] )
+    myTrain = train(1204, 43, myLoc)
 \end{verbatim}
 \end{description}
 
@@ -180,20 +185,22 @@ The train object shall be accessible by the following functions.
 \subparagraph{getDirection} 
 \begin{description}
 \item[\hspace{1cm}Pre:] The train object must exist. 
-\item[\hspace{1cm}Post:] Returns the current direction of the train (forward or backwards).
+\item[\hspace{1cm}Post:] Returns the current direction of the train (see 'direction' enum).
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
+	myDir = train1.getDirection()    
 \end{verbatim}
 \end{description}
 
 \subparagraph{setDirection(direction d)} 
 \begin{description}
 \item[\hspace{1cm}Pre:] The train object must exist. 
-\item[\hspace{1cm}Post:] A message is sent to the \CS setting the current direction of the train to that which was given.
+\item[\hspace{1cm}Post:] A message is sent to the \CS setting the current direction of the train to that which was given (see 'direction' enum).
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
+	train1.setDirection(direction.forward)
 \end{verbatim}
 \end{description}
 
@@ -204,16 +211,19 @@ The train object shall be accessible by the following functions.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
+    if train1.getLights():
+        print "lights are on"
 \end{verbatim}
 \end{description}
 
 \subparagraph{setLights(boolean l)} 
 \begin{description}
-\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Pre:] The train object must exist.
 \item[\hspace{1cm}Post:] A message is sent to the \CS setting the current state of the lights to on or off based on input.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
+    train1.setLights(true)
 \end{verbatim}
 \end{description}
 
@@ -224,6 +234,8 @@ The train object shall be accessible by the following functions.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
+    if train1.getBell():
+        print "bell is on"
 \end{verbatim}
 \end{description}
 
@@ -234,16 +246,18 @@ The train object shall be accessible by the following functions.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
+    train1.setBell(true)
 \end{verbatim}
 \end{description}
 
 \subparagraph{soundHorn} 
 \begin{description}
 \item[\hspace{1cm}Pre:] The train object must exist. 
-\item[\hspace{1cm}Post:] A message is sent to the \CS that the train should sound its horn. The horn is a pulse, so there is no getter for this.
+\item[\hspace{1cm}Post:] A message is sent to the \CS that the train should sound its horn. The horn is a pulse, so there is no getter for this. (It has no state).
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
+    train1.soundHorn()
 \end{verbatim}
 \end{description}
 
@@ -254,6 +268,7 @@ The train object shall be accessible by the following functions.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
+    train1.mute()
 \end{verbatim}
 \end{description}
 
@@ -264,26 +279,29 @@ The train object shall be accessible by the following functions.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
+    train1.unmute()
 \end{verbatim}
 \end{description}
 
 \subparagraph{getSwitchInFront} 
 \begin{description}
 \item[\hspace{1cm}Pre:] The train object must exist. 
-\item[\hspace{1cm}Post:] Returns a reference to the switch which is closest to the train in front of it.
+\item[\hspace{1cm}Post:] Returns a reference to the switch which is closest to the train in front of it. The front is determined by direction of movement, not the engine of the train.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
+    nextSwitch = train1.getSwitchInFront()
 \end{verbatim}
 \end{description}
 
-\subparagraph{getDistanceTo(node dest)} 
+\subparagraph{getHeadSensor} 
 \begin{description}
 \item[\hspace{1cm}Pre:] The train object must exist. 
-\item[\hspace{1cm}Post:] Returns distance to the destination.
+\item[\hspace{1cm}Post:] Returns a reference to the sensor in the front of this train's location. The front is determined by direction of movement, not the engine of the train.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
+    mySensor = train1.getHeadSensor()
 \end{verbatim}
 \end{description}
 
@@ -301,16 +319,6 @@ The train object shall be accessible by the following functions.
 \begin{description}
 \item[\hspace{1cm}Pre:] The train object must exist. 
 \item[\hspace{1cm}Post:] A trainState (enum defined prior) is returned for which state the train is in.
-\item[\hspace{1cm}Example:]
-\begin{verbatim}
-
-\end{verbatim}
-\end{description}
-
-\subparagraph{toString} 
-\begin{description}
-\item[\hspace{1cm}Pre:] The train object must exist. 
-\item[\hspace{1cm}Post:] Returns a string containing all the information about the train's current state.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
@@ -346,6 +354,7 @@ The track object shall be accessible by the following functions.
 \item[\hspace{1cm}Post:] Track object is created from the XML file's topology. This constructs the global object of the track. A maximum of one track object shall exist; exception shall be raised if the global track already exists, or if the document is non-conforment to the XML standards defined.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
+
     readXML (layout.xml)  #creates a global 'track' object
 \end{verbatim}
 \end{description}
@@ -356,6 +365,7 @@ The track object shall be accessible by the following functions.
 \item[\hspace{1cm}Post:] Track object is created from the data received from the \CS by making a request for said data. An exception is raised if the \CS is not running.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
+
     if isControlProgRunning():
         acquireTrackState()
 \end{verbatim}
@@ -367,6 +377,7 @@ The track object shall be accessible by the following functions.
 \item[\hspace{1cm}Post:] Returns a reference to the sensor with the given ID. An exception is raised if it does not exist.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
+
     mySensor = getSensor (47)
 \end{verbatim}
 \end{description}
@@ -377,31 +388,11 @@ The track object shall be accessible by the following functions.
 \item[\hspace{1cm}Post:] Returns a reference to the switch with the given ID. An exception is raised if it does not exist.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
+
     mySwitch = getSwitch (7)
 \end{verbatim}
 \end{description}
 
-
-\subparagraph{getDistance(node s1, node s2)}
-\begin{description}
-\item[\hspace{1cm}Pre:] \TN{}s s1 and s2 represent either sensors or switches. The track object must exist.
-\item[\hspace{1cm}Post:] Returns the distance between the two nodes, following the shortest path on the track.
-\item[\hspace{1cm}Example:]
-\begin{verbatim}
-
-\end{verbatim}
-\end{description}
-
-
-\subparagraph{toString}
-\begin{description}
-\item[\hspace{1cm}Pre:] The track object must exist.
-\item[\hspace{1cm}Post:] Returns a string containing all the information about the track and its current state.
-\item[\hspace{1cm}Example:]
-\begin{verbatim}
-    
-\end{verbatim}
-\end{description}
 
 \subsubsection{Sensor}
 The sensor objects are created upon the construction of a track. They are not constructable by a user. Sensors represent a \TN in the track graph.
@@ -414,10 +405,44 @@ The sensor objects are created upon the construction of a track. They are not co
 \item The distance to the previous adjacent \TN.
 \end{itemize}
 \paragraph{Functions}
-The sensor object shall be accessible by the following functions.
-\subparagraph{getID} Pre: The sensor object must exist. Post: Returns the unique identifier of the sensor.
-\subparagraph{getDistanceNext} Pre: The sensor object must exist. Post: Returns next \TN.
-\subparagraph{getDistancePrev} Pre: The sensor object must exist. Post: Returns previous \TN.
+The sensor object shall be accessible by the following functions.\\
+%All examples will assume a sensor object, $mySensor=getSensor(7)$, exists.
+\subparagraph{getID}
+\begin{description}
+\item[\hspace{1cm}Pre:] The sensor object must exist.
+\item[\hspace{1cm}Post:] Returns the unique identifier of the sensor.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    mySensor = getSensor (7)
+    mySensorID = mySensor.getID()    # returns 7
+\end{verbatim}
+\end{description}
+
+\subparagraph{getDistanceNext}
+\begin{description}
+\item[\hspace{1cm}Pre:] The sensor object must exist.
+\item[\hspace{1cm}Post:] Returns next \TN.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    mySensor = getSensor (7)
+    nextDistance = mySensor.getDistanceNext()
+\end{verbatim}
+\end{description}
+
+\subparagraph{getDistancePrev}
+\begin{description}
+\item[\hspace{1cm}Pre:] The sensor object must exist.
+\item[\hspace{1cm}Post:] Returns previous \TN.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    mySensor = getSensor (7)
+    prevDistance = mySensor.getDistancePrev()
+\end{verbatim}
+\end{description}
+
 
 \subsubsection{Switch}
 The switch objects are created upon the construction of a track. They are not constructable by a user. Switches represent a \TN in the track graph.
@@ -431,17 +456,82 @@ The switch objects are created upon the construction of a track. They are not co
 \item The distance to the \TN when the switch is thrown.
 \item A reference to the adjacent \TN when the switch is closed.
 \item The distance to the \TN when the switch is closed.
+\item The requested power level. (Actual power may be less; it depends on the power limit of section the train is on)
 \end{itemize}
 \paragraph{Functions}
 The switch object shall be accessible by the following functions.
-\subparagraph{getID} Pre: The switch object must exist. Post: Returns the unique identifier of the switch.
-\subparagraph{getState} Pre: The switch object must exist. Post: Returns the current state (Closed or Thrown) of the switch.
-\subparagraph{getClosedNode} Pre: The switch object must exist.  Post: Returns the closed \TN.
-\subparagraph{getThrownNode} Pre: The switch object must exist.  Post: Returns the thrown \TN.
-\subparagraph{getNarrowNode} Pre: The switch object must exist.  Post: Returns the narrow \TN.
-\subparagraph{getDist} Pre: The switch must exist.  Returns the distance to the switch.
 
-\subparagraph{Throw} Pre: The switch must exist.  Post:  A message is sent to the \CS setting the current state of the switch to Thrown. Exception will be raised if the \CS prevents the operation (possibly due to ownership of section).
+\subparagraph{getID}
+\begin{description}
+\item[\hspace{1cm}Pre:] The switch object must exist.
+\item[\hspace{1cm}Post:] Returns the unique identifier of the switch.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    mySwitch = getSwitch (3)
+    mySwitchID = mySwitch.getID()    # returns 3
+\end{verbatim}
+\end{description}
+
+\subparagraph{getState}
+\begin{description}
+\item[\hspace{1cm}Pre:] The switch object must exist.
+\item[\hspace{1cm}Post:] Returns the current state (Closed or Thrown) of the switch. (see 'switchstate' enum)
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    mySwitch = getSwitch (3)
+    state = mySwitch.getState()
+\end{verbatim}
+\end{description}
+
+\subparagraph{getClosedNode}
+\begin{description}
+\item[\hspace{1cm}Pre:] The switch object must exist.
+\item[\hspace{1cm}Post:] Returns the \TN along the closed path of the switch.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    mySwitch = getSwitch (3)
+    theClosedNode = mySwitch.getClosedNode()
+\end{verbatim}
+\end{description}
+
+\subparagraph{getThrownNode}
+\begin{description}
+\item[\hspace{1cm}Pre:] The switch object must exist.
+\item[\hspace{1cm}Post:] Returns the \TN along the open path of the switch.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    mySwitch = getSwitch (3)
+    theClosedNode = mySwitch.getOpenNode()
+\end{verbatim}
+\end{description}
+
+\subparagraph{getNarrowNode}
+\begin{description}
+\item[\hspace{1cm}Pre:] The switch object must exist.
+\item[\hspace{1cm}Post:] Returns the \TN along the narrow (opposite the closed/open side) path of the switch.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    mySwitch = getSwitch (3)
+    theClosedNode = mySwitch.getNarrowNode()
+\end{verbatim}
+\end{description}
+
+\subparagraph{Throw}
+\begin{description}
+\item[\hspace{1cm}Pre:] The switch must exist.
+\item[\hspace{1cm}Post:] A message is sent to the \CS setting the current state of the switch to Thrown. Exception will be raised if the \CS prevents the operation (possibly due to ownership of section).
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    
+\end{verbatim}
+\end{description}
+
 \subparagraph{Close} Pre: The switch must exist.  Post:  A message is sent to the \CS setting the current state of the switch to Closed. Exception will be raised if the \CS prevents the operation (possibly due to ownership of section).
 %\subparagraph{setState(closed, thrown, or moving)} Pre: The switch object must exist. Post: A message is sent to the \CS setting the current state of the switch to that which was given.
 
