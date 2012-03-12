@@ -550,6 +550,7 @@ The location object shall be accessible by the following functions.
 \item[\hspace{1cm}Post:] The location object is created as the space between the provided sensors. An exception is raised if they are not adjacent.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
+
     myLocation = location(mySensors)    #List of sensor objects
 \end{verbatim}
 \end{description}
@@ -560,6 +561,7 @@ The location object shall be accessible by the following functions.
 \item[\hspace{1cm}Post:] Returns the length of the location.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
+
     length = myLocation.getLength()
 \end{verbatim}
 \end{description}
@@ -570,6 +572,7 @@ The location object shall be accessible by the following functions.
 \item[\hspace{1cm}Post:] Returns a list of references to the trains who occupy any part of this location. Returns null if the entire location is unoccupied.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
+
     myOccupant = myLocation.getOccupant()
 \end{verbatim}
 \end{description}
@@ -580,6 +583,7 @@ The location object shall be accessible by the following functions.
 \item[\hspace{1cm}Post:] Returns the list of switches in this location.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
+
     mySwitches = myLocation.getSwitches()   
 \end{verbatim}
 \end{description}
@@ -590,6 +594,7 @@ The location object shall be accessible by the following functions.
 \item[\hspace{1cm}Post:] Returns the list of sections in this location.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
+
     mySections = myLocation.getSections()   
 \end{verbatim}
 \end{description}
@@ -608,6 +613,7 @@ The section object shall be accessible by the following functions.
 \item[\hspace{1cm}Post:] A section object is created as the space between the pair of sensor ends. An exception is raised if they are not adjacent.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
+
     mySection = getSection(sensor1,sensor2)
 \end{verbatim}
 \end{description}
@@ -618,6 +624,7 @@ The section object shall be accessible by the following functions.
 \item[\hspace{1cm}Post:] Any switches within this section are thrown or closed such that a train may travel between the section's pair of sensors. An exception is raised if \CS prevents the operation.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
+
     mySection.prepare()
 \end{verbatim}
 \end{description}
@@ -628,6 +635,7 @@ The section object shall be accessible by the following functions.
 \item[\hspace{1cm}Post:] Returns true or false if a the switches within this section are situated to allow travel from this section's pair of sensors.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
+
     status = mySection.isPrepared()
 \end{verbatim}
 \end{description}
@@ -638,6 +646,7 @@ The section object shall be accessible by the following functions.
 \item[\hspace{1cm}Post:] Returns the length of the section.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
+
     myLength = mySection.getLength()
 \end{verbatim}
 \end{description}
@@ -647,6 +656,7 @@ The section object shall be accessible by the following functions.
 \item[\hspace{1cm}Post:] Returns a reference to the train who occupies this section. Returns null if the section is unoccupied.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
+
     occupant = mySection.getOccupant()
 \end{verbatim}
 \end{description}
@@ -656,20 +666,21 @@ The section object shall be accessible by the following functions.
 \item[\hspace{1cm}Post:] Returns the list of switches in this section.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
+
     switches = mySection.getSwitches()
 \end{verbatim}
 \end{description}
 
-\subparagraph{getSpeedLimit}
+\subparagraph{getPowerLimit}
 \begin{description}
 \item[\hspace{1cm}Pre:] The section must exist.
-\item[\hspace{1cm}Post:] Returns the speed of this section.
+\item[\hspace{1cm}Post:] Returns the power of this section.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
-    speedLimit = mySection.getSpeedLimit()
+
+    powerLimit = mySection.getPowerLimit()
 \end{verbatim}
 \end{description}
-
 
 \subsubsection{Path}
 A path is a user defined aggregate of contiguous sensors. Although it has the same data as a location, it has different real-world meaning, and its functions are different.
@@ -679,10 +690,60 @@ A path is a user defined aggregate of contiguous sensors. Although it has the sa
 \end{itemize}
 \paragraph{Functions}
 The path object shall be accessible by the following functions.
-\subparagraph{path(list sensors)} Constructor. Pre: The path object does not exist. Post: The path object is created as the list of provided sensors.
-\subparagraph{getLength} Pre: The path must exist. Post: Returns the length of the path.
-\subparagraph{getSwitches} Pre: The path must exist.  Post: Returns the list of switches along the path.
-\subparagraph{getSections} Pre: The path must exist.  Post: Returns the list of sections along the path.
+\subparagraph{path(list sensors)} Constructor.
+\begin{description}
+\item[\hspace{1cm}Pre:] The path object does not exist.
+\item[\hspace{1cm}Post:] The path object is created as the list of provided sensors.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    myPath = path(mySensors)
+\end{verbatim}
+\end{description}
+
+\subparagraph{buildPath(sensor a, b, int Flag=default)} Alternative Constructor.
+\begin{description}
+\item[\hspace{1cm}Pre:] The path object does not exist.
+\item[\hspace{1cm}Post:] The path object is created as the list of provided sensors.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    myPath = path(mySensors)
+\end{verbatim}
+\end{description}
+
+\subparagraph{getLength}
+\begin{description}
+\item[\hspace{1cm}Pre:] The path must exist.
+\item[\hspace{1cm}Post:] Returns the length of the path.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    length = myPath.getLength()
+\end{verbatim}
+\end{description}
+
+\subparagraph{getSwitches}
+\begin{description}
+\item[\hspace{1cm}Pre:] The path must exist.
+\item[\hspace{1cm}Post:] Returns the list of switches along the path.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    switches = myPath.getSwitches()
+\end{verbatim}
+\end{description}
+
+\subparagraph{getSections}
+\begin{description}
+\item[\hspace{1cm}Pre:] The path must exist.
+\item[\hspace{1cm}Post:] Returns the list of sections along the path.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    sections = myPath.getSections()
+\end{verbatim}
+\end{description}
 
 
 \subsection{Functions in Library}
