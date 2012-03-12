@@ -64,7 +64,7 @@ The initialization functions shall start several background threads. A great dea
 \paragraph{Observer} For our event driven functionality, there will have to be a thread whose job it is to monitor changes to the \LC and run even driven functions as needed.
 \subsection{Global Variables}
 \paragraph{track} The track must be a global variable. All the trains in this script shall share the track. The decription of the object is later in this section.
-\subsection{Constant Enum Types}
+\subsection{Constant Enums and Flags}
 \paragraph{direction} A direction type is necessary so that users can assign trains directions to constant values. This enum shall contain:
 \begin{itemize}
 \item forward
@@ -83,6 +83,13 @@ The initialization functions shall start several background threads. A great dea
 \item thrown
 \item moving
 \end{itemize}
+\paragraph{pathFlags} Flags to the path creating functions are necessary so that users can choose what to allow and prioritize. These flags contain:
+\begin{itemize}
+\item prioritize : distance or speed
+\item doubleBacks : allow or disallow
+\item[default:] prioritize=distance, doubleBacks=disallow
+\end{itemize}
+When referring to allowing doubleBacks or not, it is meant for paths where the actual shortest path may require stopping and reversing down a different branch of a switch. The user may find this undesirable.
 \subsection{Classes in Library}
 All of these objects will exist in the \LC. Their accessors will access the \LC for all information, and the setters will send messages to the \CS. This data must be in one central location so the background threads can watch and set it. \\ \\
 All classes should have a string representation for output (debugging, etc).\\
@@ -320,16 +327,18 @@ The train object shall be accessible by the following functions.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
+    train1.stop()
 \end{verbatim}
 \end{description}
 
 \subparagraph{getState} 
 \begin{description}
 \item[\hspace{1cm}Pre:] The train object must exist. 
-\item[\hspace{1cm}Post:] A trainState (enum defined prior) is returned for which state the train is in.
+\item[\hspace{1cm}Post:] A trainState is returned for which state the train is in (see 'trainState' enum).
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
+    myState = train1.getState()
 \end{verbatim}
 \end{description}
 
@@ -340,10 +349,10 @@ The train object shall be accessible by the following functions.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
+    myPath = path( [ sensor1, sensor2, sensor3, sensor4 ] )
+    train1.follow(50, myPath)
 \end{verbatim}
 \end{description}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 
 \subsubsection{Track}
 The track object shall be either constructed by reading the XML file and sent to the \CS, or it shall be constructed by the getTrackState function from its data received from the \CS.
@@ -776,8 +785,8 @@ These functions are more ambitious, and should only be attempted after all the p
     In this section, we go over what additions needed to be added to the current architecture.
 \subsection{Design Constraints}
 \subsection{Control Program}
-    A messaging protocol between ``virtual'' remotes the control program shall be added.  This protocol is simply for initializing the train and knowing if the loco buffer server is running. The getTrainState and getTrackState functions will need a new message to ask the \CS for data, and a new one to receieve said data.
-    Some methodology for exceptions must be added to \CS as well. This should be used sparingly, as we do not want to add very many new functions to the \CS. One example where it is necessary is the train constructor. If the train cannot be get/set, an error message should be sent back.
+    A messaging protocol between ``virtual'' remotes the control program shall be added.  This protocol is mainly for initializing the train and knowing if the loco buffer server is running. The getTrainState and getTrackState functions will need a new message to ask the \CS for data, and a new one to receieve said data.
+    \\Some methodology for exceptions must be added to \CS as well. This should be used sparingly, as we do not want to add very many new functions to the \CS. One example where it is necessary is the train constructor. If the train cannot be get/set, an error message should be sent back.
 \subsection{XML Specification}
     The list of additions to the XML specification is:
 \begin{enumerate}
@@ -788,8 +797,11 @@ These functions are more ambitious, and should only be attempted after all the p
 \newpage
 \section{Non-Functional Requirements}
 \subsection{Performance Requirements}
+
 \subsection{Security Requirements}
+
 \subsection{Safety Requirements}
+The \TSL may interface only with the \CS. It may not talk directly to the Loco Buffer Server, as this would be a high risk environment for scripting. A bug in a script may frequently cause collisions or derailments, so we are disallowing this case entirely.
 
 \newpage
 \section{Additional Functionality For Future Releases}
@@ -799,10 +811,9 @@ The \TSL we have specified is powerful, but some features such as those using hi
 \begin{enumerate}
     \item Graphical User Interface. A GUI could be added on top which may have a visual representation of the entire track system, displaying data from \LC in real time. It should have an ability to load scripts or an interactive scripting interface.
     \item Scripting Wrapper. As mentioned earlier, some aspects of this library will be less than ideal syntactically. This wrapper could translate higher level human language into something the \TSL can understand.
-    \item Web Interface. A concurrent project is building a web throttle, and perhaps the \TSL could be incorporated into this later.
 \end{enumerate}
 \subsection{Speed Limits}
-Speed limits between sensors could be added to the XML Documents, and the \TSL should enforce them. This is a feature that would have to be specified in detail when implemented. Likely, the user could toggle enforcement on and off, and when active it would send messages to the \CS slowing trains down if they enter a section which has a speed limit lower than the desired speed of the train.
+Speed limits for each section could be added to the XML Documents, and the \TSL could enforce them automatically. This is a feature that would have to be specified in detail when implemented. Likely, the user could toggle enforcement on and off, and when actived it would send messages to the \CS slowing trains down if they enter a section which has a speed limit lower than the desired speed of the train. This would also require an extra field in the train class to keep track of the desired power level verus the actual power level.
 
 \newpage
 \section{Sample Scripts}
