@@ -126,10 +126,10 @@ The train object shall be accessible by the following functions.
 	myLoc = location( [ s1, s2, s3, s4 ] )
     myTrain = train(1204, 43, myLoc)
 \end{verbatim}
+Complete examples of initialization are at the end of this document.
 \end{description}
 
 \subparagraph{getTrains} Alternative multi-constructor.
-\subparagraph{getID}
 \begin{description}
 \item[\hspace{1cm}Pre:] The train objects do not exist.
 \item[\hspace{1cm}Post:] Train objects are created from the data received from the \CS by making a request for said data. An exception is raised if the \CS is not running. A list of all the train objects is returned.
@@ -138,8 +138,10 @@ The train object shall be accessible by the following functions.
 
     trains = getTrains()     #trains is a list
 \end{verbatim}
+Complete examples of initialization are at the end of this document.
 \end{description}
 
+\subparagraph{getID}
 \begin{description}
 \item[\hspace{1cm}Pre:] The train object must exist.
 \item[\hspace{1cm}Post:] Returns the unique identifier of the train. (\CS id)
@@ -374,6 +376,7 @@ The track object shall be accessible by the following functions.
 
     readXML (layout.xml)  #creates a global 'track' object
 \end{verbatim}
+Complete examples of initialization are at the end of this document.
 \end{description}
 
 \subparagraph{acquireTrackState} Alternative constructor.
@@ -386,6 +389,7 @@ The track object shall be accessible by the following functions.
     if isControlProgRunning():
         acquireTrackState()
 \end{verbatim}
+Complete examples of initialization are at the end of this document.
 \end{description}
 
 \subparagraph{getSensor(integer ID)}
@@ -904,14 +908,13 @@ These functions are more ambitious, and should only be attempted after all the p
     The list of additions to the XML specification is:
 \begin{enumerate}
     \item Length between each sensor on the track.
-    \item Speedlimits on a given section.
+    \item Power limits on a given section.
 \end{enumerate}
 
 \newpage
 \section{Non-Functional Requirements}
 \subsection{Performance Requirements}
-The \TSL shall use multiple threads. None of these threads shall take enough CPU time to interfere with the main control. For example polling time of the train events shall be no more frequent than ten times per second.
-
+The \TSL shall use multiple threads in the background. None of these threads shall take enough CPU time to interfere with the main control. For example polling time of the train events shall be no more frequent than ten times per second.
 \subsection{Safety Requirements}
 The \TSL may interface only with the \CS. It may not talk directly to the Loco Buffer Server, as this would be a high risk environment for scripting. A bug in a script may frequently cause collisions or derailments, so we are disallowing this case entirely.
 
@@ -924,8 +927,8 @@ The \TSL we have specified is powerful, but some features such as those using hi
     \item Graphical User Interface. A GUI could be added on top which may have a visual representation of the entire track system, displaying data from \LC in real time. It should have an ability to load scripts or an interactive scripting interface.
     \item Scripting Wrapper. As mentioned earlier, some aspects of this library will be less than ideal syntactically. This wrapper could translate higher level human language into something the \TSL can understand.
 \end{enumerate}
-\subsection{Speed Limits}
-Speed limits for each section could be added to the XML Documents, and the \TSL could enforce them automatically. This is a feature that would have to be specified in detail when implemented. Likely, the user could toggle enforcement on and off, and when actived it would send messages to the \CS slowing trains down if they enter a section which has a speed limit lower than the desired speed of the train. This would also require an extra field in the train class to keep track of the desired power level verus the actual power level.
+\subsection{Power Limits}
+Power limits are the train's version of speed limits. For each section, they will be added to the XML Documents, and the \TSL could enforce them automatically. This is a feature that would have to be specified in detail when implemented. Likely, the user could toggle enforcement on and off, and when actived it would send messages to the \CS slowing trains down if they enter a section which has a power limit lower than the desired speed of the train. This would also require an extra field in the train class to keep track of the desired power level verus the actual power level.
 
 \newpage
 \section{Sample Scripts}
@@ -994,47 +997,6 @@ for t in trains:
 
 #from now on, these train events will ensure that trains crossing bridges are slowed down!
 
-\end{verbatim}
-\subsection{Go to Mountains}
-\begin{verbatim}
-/*
- * We program the train to go to the mountains section that we define,
- * then once there we tell the train to sound it's horn.
- */
-
-# let 35 be the section for the mountains
-mountains = track.getSection(35)
-
-# define the function we would like to register
-def atMountains():
-    train1.hornOn(5) # Duration = 5 secs
-    train1.reverseDirection()
-
-#here we tell the event handler to only register this function for 5 minutes.
-t = trainEvent(mountains.entered(train1), atMountains, 60 * 60 * 5)
-
-# Tell train1 to go to the mountains.
-train1.gotoSection(mountains)
-
-
-
-\end{verbatim}
-\subsection{Manual Switch Control}
-\begin{verbatim}
-# Lets mess with some switches!
-
-train1 = track.getTrain(1204)
-switch1 = track.nextSwitch(train1)
-
-if switch1.getSection().reserved():
-    train1.stop()
-end if
-
-waituntil (NOT switch1.getSection().reserved())
-
-# This makes the switch open or closed to allow the train to pass.
-switch1.allowPass(train1)
-train1.setSpeed(50)
 \end{verbatim}
 
 \end{document}
