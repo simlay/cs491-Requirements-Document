@@ -861,24 +861,9 @@ The following functions allow manual control of a train event's existence in the
 \paragraph{Description}
 The observer will watch the \LC, and when any of its registered trainEvents' condition functions return true, it will spawn a new thread to execute their event function. This is required to be run in a new thread so as not to block other events from occuring. No event's execute function shall be running more than once at a time. If the count was set by the user to zero, it shall never be automatically removed. If the count was set to a positive integer, the event shall decriment its count every time its event occurs. When it reaches zero, it is automatically unregistered. The observer shall check these no more frequently than ten times per second.
 These functions are non-blocking and shall return immediately.
-\item[\hspace{1cm}Example:]
-\begin{verbatim}
-
-# Get the sections on the bridge(s)
-bridgeLoc = []
-bridgeLoc.append(track.getLocation(5, 6))
-bridgeLoc.append(track.getLocation(10, 11, 12))
-bridgeLoc.append(track.getLocation(22, 23))
-
-# let t be some list of all the trains we want to slow down for bridges
-for t in trains:
-    # Loop over all bridge sections and slow the train at all bridge sections
-    for l in bridgeLoc:
-        tEv = trainEvent(t.occupies(t, l), slowDown, 0)
-        # assume functions are define.
-        tEv.register()
-\end{verbatim}
 \end{description}
+\subparagraph{Example:}
+A complete example of this event driven functionality is at the end of this document.
 
 
 \subsection{High Level Functions}
@@ -936,16 +921,19 @@ These functions are more ambitious, and should only be attempted after all the p
 
 \newpage
 \section{External Interface Requirements}
+    DO THIS NOW
+
     In this section, we go over the general interface requirements for the train scripting language.
 \subsection{Control Program}
+    DO THIS NOW
     There shall be one or more threads which intaract between the control session and the current train script instance.
 \subsection{Train Topology}
+    DO THIS NOW
     XML Document.
 
 \newpage
 \section{Additions to Current Software}
     In this section, we go over what additions needed to be added to the current architecture.
-\subsection{Design Constraints}
 \subsection{Control Program}
     A messaging protocol between ``virtual'' remotes the control program shall be added.  This protocol is mainly for initializing the train and knowing if the loco buffer server is running. The getTrainState and getTrackState functions will need a new message to ask the \CS for data, and a new one to receieve said data.
     \\Some methodology for exceptions must be added to \CS as well. This should be used sparingly, as we do not want to add very many new functions to the \CS. One example where it is necessary is the train constructor. If the train cannot be get/set, an error message should be sent back.
