@@ -97,7 +97,7 @@ The train object shall be either constructed by the user manually and sent to th
 \end{itemize}
 \paragraph{Functions}
 The train object shall be accessible by the following functions.
-\subparagraph{train(integer id, list location)} Constructor. Pre: The train object does not exist. Post: The train object exists, and it is either ``set'' or ``stolen'' through the \CS. The \CS will know where it is located based on the input, and the physical train is expected to be halted at initialization. If the ID is invalid for the \CS, an exception shall be sent back.
+\subparagraph{train(integer id, int length, list location)} Constructor. Pre: The train object does not exist. Post: The train object exists, and it is either ``set'' or ``stolen'' through the \CS. The \CS will know where it is located based on the input, and the physical train is expected to be halted at initialization. If the ID is invalid for the \CS, an exception shall be sent back.
 \subparagraph{getTrains} Alternative multi-constructor. Pre: The train objects do not exist. Post: Train objects are created from the data received from the \CS by making a request for said data. An exception is raised if the \CS is not running. A list of all the train objects is returned.
 \subparagraph{getID} Pre: The train object must exist. Post: Returns the unique identifier of the train.
 \subparagraph{getLocation} Pre: The train object must exist. Post: Returns the array of sensors the train is occupying.
@@ -265,7 +265,6 @@ These functions are more ambitious, and should only be attempted after all the p
 
 \newpage
 \section{External Interface Requirements}
-Sebastian\\
     In this section, we go over the general interface requirements for the train scripting language.
 \subsection{Control Program}
     There shall be one or more threads which intaract between the control session and the current train script instance.
@@ -274,12 +273,11 @@ Sebastian\\
 
 \newpage
 \section{Additions to Current Software}
-Sebastian \\
-    In this section, we go over what additions needed to be added to the
-    current architecture.
+    In this section, we go over what additions needed to be added to the current architecture.
 \subsection{Design Constraints}
 \subsection{Control Program}
     A messaging protocol between ``virtual'' remotes the control program shall be added.  This protocol is simply for initializing the train and knowing if the loco buffer server is running. The getTrainState and getTrackState functions will need a new message to ask the \CS for data, and a new one to receieve said data.
+	Some methodology for exceptions must be added to \CS as well. This should be used sparingly, as we do not want to add very many new functions to the \CS. One example where it is necessary is the train constructor. If the train cannot be get/set, an error message should be sent back.
 \subsection{XML Specification}
     The list of additions to the XML specification is:
 \begin{enumerate}
