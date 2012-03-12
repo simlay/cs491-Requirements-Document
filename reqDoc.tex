@@ -11,7 +11,10 @@
 \usepackage{hyperref}
 
 \def\TSL{Train Scripting Language\xspace}
-\def\CS{Control Progam\xspace} \def\LC{Local Copy of Train State\xspace} \def\TN{Track Node\xspace}
+\def\CS{Control Progam\xspace}
+\def\LC{Local Copy of Train State\xspace}
+\def\TN{Track Node\xspace}
+
 \title{{\bf Software Project Requirements Specification} \\ for \\ {\bf Train Scripting Python Library}}
 \author{Prepared by Alex Wipf, Sebastian Imlay, Max Aussendorf, Paul Sheraton}
 \parskip 7.2pt
@@ -25,7 +28,7 @@
 \newpage
 \section{Introduction}
 \subsection{Vision Statement}
-WE NEED A FORMAL VISION
+For Dr. Martin Osborne, who has requested a language and framework for controlling model trains.  The \TSL is a library that extends the functionality of model train operations to the script writer.  Unlike other libraries for controlling external hardware, the \TSL provides \verb=when <expr> do <statements>= and \verb=wait until <expr>= features to allow for event driven statement blocks.  Our product provides a library implementing low level functionality for manipulating trains as well as higher level functions to allow for a more user friendly scripting experience.
 \subsection{Purpose}
 Creation of a Python library to communicate with the control software for the model train in CF408. This library will allow users to create scripts which can control the trains without human interaction.
 \subsection{Background}
@@ -41,7 +44,8 @@ We would like to create a scripting language that anybody can use to program hig
 
 \newpage
 \subsection{Scope}
-NEED FORMAL SCOPE DEFINITION
+For this project, we provide the library and framework for the \TSL. These features include the underlying functionality needed for initialization, observation and manipulation objects on the track.  This includes throwing and closing of switches, variation of a track and train state.  More higher level functions include a modified Dijkstra's algorithm for determining a path between two locations.  Further expansion of this project would allow for a web interface and possibly a grammar addition to the Python Language for \verb=when <expr> do <statements>= and \verb=wait until <expr>= style syntax.
+
 \subsection{Risk Assessment}
 We have aimed to marginalize risks as much as we can in specification. We have required nothing which cannot be implemented in a Python Library.
 
