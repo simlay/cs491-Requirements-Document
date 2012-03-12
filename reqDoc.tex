@@ -104,7 +104,7 @@ The train object shall be accessible by the following functions.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
-    train t = train(1204, 43, s1, s2, s3, s4)
+    myTrain = train(1204, 43, s1, s2, s3, s4)
 \end{verbatim}
 \end{description}
 
@@ -116,7 +116,7 @@ The train object shall be accessible by the following functions.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
-    train t[] = getTrains()
+    trains = getTrains()     #trains is a list
 \end{verbatim}
 \end{description}
 
@@ -126,7 +126,7 @@ The train object shall be accessible by the following functions.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
-    int t_id = train1.getID()
+    myID = train1.getID()
 \end{verbatim}
 \end{description}
 
@@ -137,7 +137,7 @@ The train object shall be accessible by the following functions.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
-    location loc = train1.getLocation()
+    myLoc = train1.getLocation()
 \end{verbatim}
 \end{description}
 
@@ -151,30 +151,183 @@ The train object shall be accessible by the following functions.
 
     if train1.occupies(loc):
         print "occupying loc"
-    else:
-        print "not occupying loc
 \end{verbatim}
 \end{description}
 
-\subparagraph{getPower} Pre: The train object must exist. Post: Returns the current power level of the train.
-\subparagraph{setPower(integer p)} Pre: The train object must exist. Post: A message is sent to the \CS setting the current power level of the train to that which was given.
-\subparagraph{getDirection} Pre: The train object must exist. Post: Returns the current direction of the train (forward or backwards).
-\subparagraph{setDirection(direction d)} Pre: The train object must exist. Post: A message is sent to the \CS setting the current direction of the train to that which was given.
-\subparagraph{getLights} Pre: The train object must exist. Post: Returns whether or not the lights are on.
-\subparagraph{setLights(boolean l)} Pre: The train object must exist. Post: A message is sent to the \CS setting the current state of the lights to on or off based on input.
-\subparagraph{getBell} Pre: The train object must exist. Post: Returns whether or not the bell is on.
-\subparagraph{setBell(boolean l)} Pre: The train object must exist. Post: A message is sent to the \CS setting the current state of the bell to on or off based on input.
-Other functions defined on the object are:
-\subparagraph{soundHorn} Pre: The train object must exist. Post: A message is sent to the \CS that the train should sound its horn. The horn is a pulse, so there is no getter for this.
-\subparagraph{mute} Pre: The train object must exist. Post: A message is sent to the \CS that the train should mute its sound.
-\subparagraph{unmute} Pre: The train object must exist. Post: A message is sent to the \CS that the train should unmute its sound.
-\subparagraph{getSwitchInFront} Pre: The train object must exist. Post: Returns a reference to the switch which is closest to the train in front of it.
-\subparagraph{getSwitchBehind} Pre: The train object must exist. Post: Returns a reference to the switch which is closest to the train behind it.
-\subparagraph{getDistanceTo(node dest)} Pre: The train object must exist. Post: Returns distance to the destination.
-\subparagraph{stop} Pre: The train object must exist. Post: A message is sent to the \CS that the train should stop immediately.
-\subparagraph{getState} Pre: The train object must exist. Post: A trainState (enum defined prior) is returned for which state the train is in.
-\subparagraph{toString} Pre: The train object must exist. Post: Returns a string containing all the information about the train's current state.
-\subparagraph{follow(int power, Path p)} Pre: Train and path objects must exist. The start of the path must be the same section as the front of the train occupies. Post: Train will follow the path. This is a blocking operation. An exception is raised if the train is put into a blocking state.
+\subparagraph{getPower} 
+\begin{description}
+\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Post:] Returns the current power level of the train.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+	myPower = train1.getPower()
+\end{verbatim}
+\end{description}
+
+
+\subparagraph{setPower(integer p)} 
+\begin{description}
+\item[\hspace{1cm}Pre:] The train object must exist.
+\item[\hspace{1cm}Post:] A message is sent to the \CS setting the current power level of the train to that which was given.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+	train1.setPower(100)
+\end{verbatim}
+\end{description}
+
+\subparagraph{getDirection} 
+\begin{description}
+\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Post:] Returns the current direction of the train (forward or backwards).
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+\end{verbatim}
+\end{description}
+
+\subparagraph{setDirection(direction d)} 
+\begin{description}
+\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Post:] A message is sent to the \CS setting the current direction of the train to that which was given.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+\end{verbatim}
+\end{description}
+
+\subparagraph{getLights}
+\begin{description}
+\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Post:] Returns whether or not the lights are on.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+\end{verbatim}
+\end{description}
+
+\subparagraph{setLights(boolean l)} 
+\begin{description}
+\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Post:] A message is sent to the \CS setting the current state of the lights to on or off based on input.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+\end{verbatim}
+\end{description}
+
+\subparagraph{getBell} 
+\begin{description}
+\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Post:] Returns whether or not the bell is on.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+\end{verbatim}
+\end{description}
+
+\subparagraph{setBell(boolean l)} 
+\begin{description}
+\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Post:] A message is sent to the \CS setting the current state of the bell to on or off based on input.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+\end{verbatim}
+\end{description}
+
+\subparagraph{soundHorn} 
+\begin{description}
+\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Post:] A message is sent to the \CS that the train should sound its horn. The horn is a pulse, so there is no getter for this.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+\end{verbatim}
+\end{description}
+
+\subparagraph{mute} 
+\begin{description}
+\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Post:] A message is sent to the \CS that the train should mute its sound.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+\end{verbatim}
+\end{description}
+
+\subparagraph{unmute} 
+\begin{description}
+\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Post:] A message is sent to the \CS that the train should unmute its sound.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+\end{verbatim}
+\end{description}
+
+\subparagraph{getSwitchInFront} 
+\begin{description}
+\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Post:] Returns a reference to the switch which is closest to the train in front of it.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+\end{verbatim}
+\end{description}
+
+\subparagraph{getDistanceTo(node dest)} 
+\begin{description}
+\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Post:] Returns distance to the destination.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+\end{verbatim}
+\end{description}
+
+\subparagraph{stop} 
+\begin{description}
+\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Post:] A message is sent to the \CS that the train should stop immediately.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+\end{verbatim}
+\end{description}
+
+\subparagraph{getState} 
+\begin{description}
+\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Post:] A trainState (enum defined prior) is returned for which state the train is in.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+\end{verbatim}
+\end{description}
+
+\subparagraph{toString} 
+\begin{description}
+\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Post:] Returns a string containing all the information about the train's current state.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+\end{verbatim}
+\end{description}
+
+\subparagraph{follow(int power, Path p)} 
+\begin{description}
+\item[\hspace{1cm}Pre:] Train and path objects must exist. The start of the path must be the same section as the front of the train occupies. 
+\item[\hspace{1cm}Post:] Train will follow the path. This is a blocking operation. An exception is raised if the train is put into a blocking state.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+\end{verbatim}
+\end{description}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 
 \subsubsection{Track}
 The track object shall be either constructed by reading the XML file and sent to the \CS, or it shall be constructed by the getTrackState function from its data received from the \CS.
