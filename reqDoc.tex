@@ -346,6 +346,7 @@ The track object shall be accessible by the following functions.
 \item[\hspace{1cm}Post:] Track object is created from the XML file's topology. This constructs the global object of the track. A maximum of one track object shall exist; exception shall be raised if the global track already exists, or if the document is non-conforment to the XML standards defined.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
+
     readXML (layout.xml)  #creates a global 'track' object
 \end{verbatim}
 \end{description}
@@ -356,6 +357,7 @@ The track object shall be accessible by the following functions.
 \item[\hspace{1cm}Post:] Track object is created from the data received from the \CS by making a request for said data. An exception is raised if the \CS is not running.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
+
     if isControlProgRunning():
         acquireTrackState()
 \end{verbatim}
@@ -367,6 +369,7 @@ The track object shall be accessible by the following functions.
 \item[\hspace{1cm}Post:] Returns a reference to the sensor with the given ID. An exception is raised if it does not exist.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
+
     mySensor = getSensor (47)
 \end{verbatim}
 \end{description}
@@ -377,31 +380,21 @@ The track object shall be accessible by the following functions.
 \item[\hspace{1cm}Post:] Returns a reference to the switch with the given ID. An exception is raised if it does not exist.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
+
     mySwitch = getSwitch (7)
 \end{verbatim}
 \end{description}
 
+%\subparagraph{toString}
+%\begin{description}
+%\item[\hspace{1cm}Pre:] The track object must exist.
+%\item[\hspace{1cm}Post:] Returns a string containing all the information about the track and its current state.
+%\item[\hspace{1cm}Example:]
+%\begin{verbatim}
+%    
+%\end{verbatim}
+%\end{description}
 
-\subparagraph{getDistance(node s1, node s2)}
-\begin{description}
-\item[\hspace{1cm}Pre:] \TN{}s s1 and s2 represent either sensors or switches. The track object must exist.
-\item[\hspace{1cm}Post:] Returns the distance between the two nodes, following the shortest path on the track.
-\item[\hspace{1cm}Example:]
-\begin{verbatim}
-
-\end{verbatim}
-\end{description}
-
-
-\subparagraph{toString}
-\begin{description}
-\item[\hspace{1cm}Pre:] The track object must exist.
-\item[\hspace{1cm}Post:] Returns a string containing all the information about the track and its current state.
-\item[\hspace{1cm}Example:]
-\begin{verbatim}
-    
-\end{verbatim}
-\end{description}
 
 \subsubsection{Sensor}
 The sensor objects are created upon the construction of a track. They are not constructable by a user. Sensors represent a \TN in the track graph.
@@ -414,10 +407,44 @@ The sensor objects are created upon the construction of a track. They are not co
 \item The distance to the previous adjacent \TN.
 \end{itemize}
 \paragraph{Functions}
-The sensor object shall be accessible by the following functions.
-\subparagraph{getID} Pre: The sensor object must exist. Post: Returns the unique identifier of the sensor.
-\subparagraph{getDistanceNext} Pre: The sensor object must exist. Post: Returns next \TN.
-\subparagraph{getDistancePrev} Pre: The sensor object must exist. Post: Returns previous \TN.
+The sensor object shall be accessible by the following functions.\\
+%All examples will assume a sensor object, $mySensor=getSensor(7)$, exists.
+\subparagraph{getID}
+\begin{description}
+\item[\hspace{1cm}Pre:] The sensor object must exist.
+\item[\hspace{1cm}Post:] Returns the unique identifier of the sensor.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    mySensor = getSensor (7)
+    mySensorID = mySensor.getID()    # returns 7
+\end{verbatim}
+\end{description}
+
+\subparagraph{getDistanceNext}
+\begin{description}
+\item[\hspace{1cm}Pre:] The sensor object must exist.
+\item[\hspace{1cm}Post:] Returns next \TN.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    mySensor = getSensor (7)
+    nextDistance = mySensor.getDistanceNext()
+\end{verbatim}
+\end{description}
+
+\subparagraph{getDistancePrev}
+\begin{description}
+\item[\hspace{1cm}Pre:] The sensor object must exist.
+\item[\hspace{1cm}Post:] Returns previous \TN.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    mySensor = getSensor (7)
+    prevDistance = mySensor.getDistancePrev()
+\end{verbatim}
+\end{description}
+
 
 \subsubsection{Switch}
 The switch objects are created upon the construction of a track. They are not constructable by a user. Switches represent a \TN in the track graph.
@@ -431,17 +458,82 @@ The switch objects are created upon the construction of a track. They are not co
 \item The distance to the \TN when the switch is thrown.
 \item A reference to the adjacent \TN when the switch is closed.
 \item The distance to the \TN when the switch is closed.
+\item The requested power level. (Actual power may be less; it depends on the power limit of section the train is on)
 \end{itemize}
 \paragraph{Functions}
 The switch object shall be accessible by the following functions.
-\subparagraph{getID} Pre: The switch object must exist. Post: Returns the unique identifier of the switch.
-\subparagraph{getState} Pre: The switch object must exist. Post: Returns the current state (Closed or Thrown) of the switch.
-\subparagraph{getClosedNode} Pre: The switch object must exist.  Post: Returns the closed \TN.
-\subparagraph{getThrownNode} Pre: The switch object must exist.  Post: Returns the thrown \TN.
-\subparagraph{getNarrowNode} Pre: The switch object must exist.  Post: Returns the narrow \TN.
-\subparagraph{getDist} Pre: The switch must exist.  Returns the distance to the switch.
 
-\subparagraph{Throw} Pre: The switch must exist.  Post:  A message is sent to the \CS setting the current state of the switch to Thrown. Exception will be raised if the \CS prevents the operation (possibly due to ownership of section).
+\subparagraph{getID}
+\begin{description}
+\item[\hspace{1cm}Pre:] The switch object must exist.
+\item[\hspace{1cm}Post:] Returns the unique identifier of the switch.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    mySwitch = getSwitch (3)
+    mySwitchID = mySwitch.getID()    # returns 3
+\end{verbatim}
+\end{description}
+
+\subparagraph{getState}
+\begin{description}
+\item[\hspace{1cm}Pre:] The switch object must exist.
+\item[\hspace{1cm}Post:] Returns the current state (Closed or Thrown) of the switch. (see 'switchstate' enum)
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    mySwitch = getSwitch (3)
+    state = mySwitch.getState()
+\end{verbatim}
+\end{description}
+
+\subparagraph{getClosedNode}
+\begin{description}
+\item[\hspace{1cm}Pre:] The switch object must exist.
+\item[\hspace{1cm}Post:] Returns the \TN along the closed path of the switch.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    mySwitch = getSwitch (3)
+    theClosedNode = mySwitch.getClosedNode()
+\end{verbatim}
+\end{description}
+
+\subparagraph{getThrownNode}
+\begin{description}
+\item[\hspace{1cm}Pre:] The switch object must exist.
+\item[\hspace{1cm}Post:] Returns the \TN along the open path of the switch.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    mySwitch = getSwitch (3)
+    theClosedNode = mySwitch.getOpenNode()
+\end{verbatim}
+\end{description}
+
+\subparagraph{getNarrowNode}
+\begin{description}
+\item[\hspace{1cm}Pre:] The switch object must exist.
+\item[\hspace{1cm}Post:] Returns the \TN along the narrow (opposite the closed/open side) path of the switch.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    mySwitch = getSwitch (3)
+    theClosedNode = mySwitch.getNarrowNode()
+\end{verbatim}
+\end{description}
+
+\subparagraph{Throw}
+\begin{description}
+\item[\hspace{1cm}Pre:] The switch must exist.
+\item[\hspace{1cm}Post:] A message is sent to the \CS setting the current state of the switch to Thrown. Exception will be raised if the \CS prevents the operation (possibly due to ownership of section).
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    
+\end{verbatim}
+\end{description}
+
 \subparagraph{Close} Pre: The switch must exist.  Post:  A message is sent to the \CS setting the current state of the switch to Closed. Exception will be raised if the \CS prevents the operation (possibly due to ownership of section).
 %\subparagraph{setState(closed, thrown, or moving)} Pre: The switch object must exist. Post: A message is sent to the \CS setting the current state of the switch to that which was given.
 
