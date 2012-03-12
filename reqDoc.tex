@@ -91,7 +91,15 @@ The initialization functions shall start several background threads. A great dea
 \end{itemize}
 When referring to allowing doubleBacks or not, it is meant for paths where the actual shortest path may require stopping and reversing down a different branch of a switch. The user may find this undesirable.
 \subsection{Classes in Library}
-All of these objects will exist in the \LC. Their accessors will access the \LC for all information, and the setters will send messages to the \CS. This data must be in one central location so the background threads can watch and set it.
+All of these objects will exist in the \LC. Their accessors will access the \LC for all information, and the setters will send messages to the \CS. This data must be in one central location so the background threads can watch and set it. \\ \\
+All classes should have a string representation for output (debugging, etc).\\
+This can be achieved in python with a \verb!__repr__! function in each class. To use it, call \verb!str(object)! for the object to display.
+\begin{verbatim}
+class Foo:
+    def __repr__(self):
+        return 'This is what I look like'
+\end{verbatim}
+
 \subsubsection{Train}
 The train object shall be constructable by users.
 \paragraph{Data}
@@ -414,8 +422,8 @@ The sensor objects are created upon the construction of a track. They are not co
 \item The distance to the previous adjacent \TN.
 \end{itemize}
 \paragraph{Functions}
-The sensor object shall be accessible by the following functions.\\
-%All examples will assume a sensor object, $mySensor=getSensor(7)$, exists.
+The sensor object shall be accessible by the following functions.
+
 \subparagraph{getID}
 \begin{description}
 \item[\hspace{1cm}Pre:] The sensor object must exist.
@@ -428,7 +436,7 @@ The sensor object shall be accessible by the following functions.\\
 \end{verbatim}
 \end{description}
 
-\subparagraph{getDistanceNext}
+\subparagraph{getNext}
 \begin{description}
 \item[\hspace{1cm}Pre:] The sensor object must exist.
 \item[\hspace{1cm}Post:] Returns next \TN.
@@ -440,7 +448,7 @@ The sensor object shall be accessible by the following functions.\\
 \end{verbatim}
 \end{description}
 
-\subparagraph{getDistancePrev}
+\subparagraph{getPrev}
 \begin{description}
 \item[\hspace{1cm}Pre:] The sensor object must exist.
 \item[\hspace{1cm}Post:] Returns previous \TN.
@@ -494,7 +502,7 @@ The switch object shall be accessible by the following functions.
 \end{verbatim}
 \end{description}
 
-\subparagraph{getClosedNode}
+\subparagraph{getClosed}
 \begin{description}
 \item[\hspace{1cm}Pre:] The switch object must exist.
 \item[\hspace{1cm}Post:] Returns the \TN along the closed path of the switch.
@@ -506,7 +514,7 @@ The switch object shall be accessible by the following functions.
 \end{verbatim}
 \end{description}
 
-\subparagraph{getThrownNode}
+\subparagraph{getThrown}
 \begin{description}
 \item[\hspace{1cm}Pre:] The switch object must exist.
 \item[\hspace{1cm}Post:] Returns the \TN along the open path of the switch.
@@ -518,7 +526,7 @@ The switch object shall be accessible by the following functions.
 \end{verbatim}
 \end{description}
 
-\subparagraph{getNarrowNode}
+\subparagraph{getNarrow}
 \begin{description}
 \item[\hspace{1cm}Pre:] The switch object must exist.
 \item[\hspace{1cm}Post:] Returns the \TN along the narrow (opposite the closed/open side) path of the switch.
@@ -530,19 +538,30 @@ The switch object shall be accessible by the following functions.
 \end{verbatim}
 \end{description}
 
-\subparagraph{Throw}
+\subparagraph{throw}
 \begin{description}
 \item[\hspace{1cm}Pre:] The switch must exist.
 \item[\hspace{1cm}Post:] A message is sent to the \CS setting the current state of the switch to Thrown. Exception will be raised if the \CS prevents the operation (possibly due to ownership of section).
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
-
+    mySwitch = getSwitch (3)
+    mySwitch.throw()
 \end{verbatim}
 \end{description}
 
-\subparagraph{Close} Pre: The switch must exist.  Post:  A message is sent to the \CS setting the current state of the switch to Closed. Exception will be raised if the \CS prevents the operation (possibly due to ownership of section).
-%\subparagraph{setState(closed, thrown, or moving)} Pre: The switch object must exist. Post: A message is sent to the \CS setting the current state of the switch to that which was given.
+\subparagraph{close}
+\begin{description}
+\item[\hspace{1cm}Pre:] The switch must exist.
+\item[\hspace{1cm}Post:] A message is sent to the \CS setting the current state of the switch to Closed. Exception will be raised if the \CS prevents the operation (possibly due to ownership of section).
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    mySwitch = getSwitch (3)
+    mySwitch.close()
+\end{verbatim}
+\end{description}
+
 
 \subsubsection{Location}
 A location is a user defined aggregate of contiguous sensors.
@@ -559,6 +578,7 @@ The location object shall be accessible by the following functions.
 \item[\hspace{1cm}Post:] The location object is created as the space between the provided sensors. An exception is raised if they are not adjacent.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
+
     myLocation = location(mySensors)    #List of sensor objects
 \end{verbatim}
 \end{description}
@@ -569,6 +589,7 @@ The location object shall be accessible by the following functions.
 \item[\hspace{1cm}Post:] Returns the length of the location.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
+
     length = myLocation.getLength()
 \end{verbatim}
 \end{description}
@@ -579,6 +600,7 @@ The location object shall be accessible by the following functions.
 \item[\hspace{1cm}Post:] Returns a list of references to the trains who occupy any part of this location. Returns null if the entire location is unoccupied.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
+
     myOccupant = myLocation.getOccupant()
 \end{verbatim}
 \end{description}
@@ -589,6 +611,7 @@ The location object shall be accessible by the following functions.
 \item[\hspace{1cm}Post:] Returns the list of switches in this location.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
+
     mySwitches = myLocation.getSwitches()
 \end{verbatim}
 \end{description}
@@ -599,7 +622,19 @@ The location object shall be accessible by the following functions.
 \item[\hspace{1cm}Post:] Returns the list of sections in this location.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
+
     mySections = myLocation.getSections()
+\end{verbatim}
+\end{description}
+
+\subparagraph{getSensors}
+\begin{description}
+\item[\hspace{1cm}Pre:] The location must exist. 
+\item[\hspace{1cm}Post:] Returns the list of sensors in this location.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    mySensors = myLocation.getSensors()   
 \end{verbatim}
 \end{description}
 
@@ -617,6 +652,7 @@ The section object shall be accessible by the following functions.
 \item[\hspace{1cm}Post:] A section object is created as the space between the pair of sensor ends. An exception is raised if they are not adjacent.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
+
     mySection = getSection(sensor1,sensor2)
 \end{verbatim}
 \end{description}
@@ -627,6 +663,7 @@ The section object shall be accessible by the following functions.
 \item[\hspace{1cm}Post:] Any switches within this section are thrown or closed such that a train may travel between the section's pair of sensors. An exception is raised if \CS prevents the operation.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
+
     mySection.prepare()
 \end{verbatim}
 \end{description}
@@ -637,6 +674,7 @@ The section object shall be accessible by the following functions.
 \item[\hspace{1cm}Post:] Returns true or false if a the switches within this section are situated to allow travel from this section's pair of sensors.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
+
     status = mySection.isPrepared()
 \end{verbatim}
 \end{description}
@@ -647,6 +685,7 @@ The section object shall be accessible by the following functions.
 \item[\hspace{1cm}Post:] Returns the length of the section.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
+
     myLength = mySection.getLength()
 \end{verbatim}
 \end{description}
@@ -656,6 +695,7 @@ The section object shall be accessible by the following functions.
 \item[\hspace{1cm}Post:] Returns a reference to the train who occupies this section. Returns null if the section is unoccupied.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
+
     occupant = mySection.getOccupant()
 \end{verbatim}
 \end{description}
@@ -665,20 +705,21 @@ The section object shall be accessible by the following functions.
 \item[\hspace{1cm}Post:] Returns the list of switches in this section.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
+
     switches = mySection.getSwitches()
 \end{verbatim}
 \end{description}
 
-\subparagraph{getSpeedLimit}
+\subparagraph{getPowerLimit}
 \begin{description}
 \item[\hspace{1cm}Pre:] The section must exist.
-\item[\hspace{1cm}Post:] Returns the speed of this section.
+\item[\hspace{1cm}Post:] Returns the power of this section.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
-    speedLimit = mySection.getSpeedLimit()
+
+    powerLimit = mySection.getPowerLimit()
 \end{verbatim}
 \end{description}
-
 
 \subsubsection{Path}
 A path is a user defined aggregate of contiguous sensors. Although it has the same data as a location, it has different real-world meaning, and its functions are different.
@@ -688,10 +729,60 @@ A path is a user defined aggregate of contiguous sensors. Although it has the sa
 \end{itemize}
 \paragraph{Functions}
 The path object shall be accessible by the following functions.
-\subparagraph{path(list sensors)} Constructor. Pre: The path object does not exist. Post: The path object is created as the list of provided sensors.
-\subparagraph{getLength} Pre: The path must exist. Post: Returns the length of the path.
-\subparagraph{getSwitches} Pre: The path must exist.  Post: Returns the list of switches along the path.
-\subparagraph{getSections} Pre: The path must exist.  Post: Returns the list of sections along the path.
+\subparagraph{path(list sensors)} Constructor.
+\begin{description}
+\item[\hspace{1cm}Pre:] The path object does not exist.
+\item[\hspace{1cm}Post:] The path object is created as the list of provided sensors.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    myPath = path(mySensors)
+\end{verbatim}
+\end{description}
+
+\subparagraph{buildPath(sensor a, b, int Flags = default)} Alternative Constructor.
+\begin{description}
+\item[\hspace{1cm}Pre:] The path object does not exist.
+\item[\hspace{1cm}Post:] The path object is created as the list of sensors from sensor a to sensor b. Flags determines how the path will be built - See pathFlags for more details 
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    myPath = buildPath(sensor1, sensor2, Flags)
+\end{verbatim}
+\end{description}
+
+\subparagraph{getLength}
+\begin{description}
+\item[\hspace{1cm}Pre:] The path must exist.
+\item[\hspace{1cm}Post:] Returns the length of the path.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    length = myPath.getLength()
+\end{verbatim}
+\end{description}
+
+\subparagraph{getSwitches}
+\begin{description}
+\item[\hspace{1cm}Pre:] The path must exist.
+\item[\hspace{1cm}Post:] Returns the list of switches along the path.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    switches = myPath.getSwitches()
+\end{verbatim}
+\end{description}
+
+\subparagraph{getSections}
+\begin{description}
+\item[\hspace{1cm}Pre:] The path must exist.
+\item[\hspace{1cm}Post:] Returns the list of sections along the path.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    sections = myPath.getSections()
+\end{verbatim}
+\end{description}
 
 \subsection{Functions in Library}
 These functions are not called on objects, but are first class functions of the library itself.
@@ -703,8 +794,32 @@ Users will need to be able to initialize the \CS, or get data from it if it is r
 \paragraph{Alternative to initialization} getTrainState and getTrackState (see Train and Track classes) can be called if the \CS is already running to initialize the \LC.
 \subsubsection{More Functions}
 These are the remaining standard functions in the library.
-\paragraph{stopAllTrains(list trains)} Pre: None. Post: Stops all trains specified immediately. If list is empty, then all trains in the system are stopped immediately.
-\subsubsection{waitUntil(function cond)} Pre: None. Post: Control is blocked until function cond returns true. Polling time shall be no more frequent than 0.1 seconds.
+\paragraph{stopTrains(list trains)}
+\begin{description}
+\item[\hspace{1cm}Pre:] None.
+\item[\hspace{1cm}Post:] Stops all trains specified immediately. If list is empty, then all trains in the system are stopped immediately.
+\end{description}
+
+\paragraph{getDistance(node n1, node n2, [flags])}
+\begin{description}
+\item[\hspace{1cm}Pre:] Both nodes must exist. (for flags, see '3.3 Enums and Flags')
+\item[\hspace{1cm}Post:] Returns the distance along the track between the nodes.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    trainHead = train.getHeadSensor()
+    destination = track.getSensor (33)
+    dist = getDistance (trainHead, destination)
+\end{verbatim}
+\end{description}
+
+
+\subsubsection{waitUntil(function cond)}
+\begin{description}
+\item[\hspace{1cm}Pre:] None
+\item[\hspace{1cm}Post:] Control is blocked until function cond returns true. Polling time shall be no more frequent than 0.1 seconds.
+\item[\hspace{1cm}Example:] See example script '8.3 Slow Down Over Bridges'
+\end{description}
 
 \subsection{Event Driven Functions}
 Event driven functions are encapsulated by a trainEvent class. For management of event driven functions, there shall be an observer thread. The user may create trainEvent objects which may be manually entered into the observer, and can be automatically or manually removed from it. Creation shall require use of higher order functions.
