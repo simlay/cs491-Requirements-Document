@@ -814,7 +814,12 @@ These are the remaining standard functions in the library.
 \end{description}
 
 
-\subsubsection{waitUntil(function cond)} Pre: None. Post: Control is blocked until function cond returns true. Polling time shall be no more frequent than 0.1 seconds.
+\subsubsection{waitUntil(function cond)}
+\begin{description}
+\item[\hspace{1cm}Pre:] None
+\item[\hspace{1cm}Post:] Control is blocked until function cond returns true. Polling time shall be no more frequent than 0.1 seconds.
+\item[\hspace{1cm}Example:] See example script '8.3 Slow Down Over Bridges'
+\end{description}
 
 \subsection{Event Driven Functions}
 Event driven functions are encapsulated by a trainEvent class. For management of event driven functions, there shall be an observer thread. The user may create trainEvent objects which may be manually entered into the observer, and can be automatically or manually removed from it. Creation shall require use of higher order functions.
