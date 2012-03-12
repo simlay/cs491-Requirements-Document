@@ -97,11 +97,65 @@ The train object shall be either constructed by the user manually and sent to th
 \end{itemize}
 \paragraph{Functions}
 The train object shall be accessible by the following functions.
-\subparagraph{train(integer id, int length, list location)} Constructor. Pre: The train object does not exist. Post: The train object exists, and it is either ``set'' or ``stolen'' through the \CS. The \CS will know where it is located based on the input, and the physical train is expected to be halted at initialization. If the ID is invalid for the \CS, an exception shall be sent back.
-\subparagraph{getTrains} Alternative multi-constructor. Pre: The train objects do not exist. Post: Train objects are created from the data received from the \CS by making a request for said data. An exception is raised if the \CS is not running. A list of all the train objects is returned.
-\subparagraph{getID} Pre: The train object must exist. Post: Returns the unique identifier of the train.
-\subparagraph{getLocation} Pre: The train object must exist. Post: Returns the array of sensors the train is occupying.
-\subparagraph{occupies(location l)} Pre: The train object must exist. Post: Returns true or false for if any part of the train's location intersects with location l.
+\subparagraph{train(integer id, int length, list location)} Constructor. 
+\begin{description}
+\item[\hspace{1cm}Pre:] The train object does not exist. 
+\item[\hspace{1cm}Post:] The train object exists, and it is either ``set'' or ``stolen'' through the \CS. The \CS will know where it is located based on the input, and the physical train is expected to be halted at initialization. If the ID is invalid for the \CS, an exception shall be sent back.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    train t = train(1204, 43, s1, s2, s3, s4)
+\end{verbatim}
+\end{description}
+
+\subparagraph{getTrains} Alternative multi-constructor. 
+\subparagraph{getID}
+\begin{description}
+\item[\hspace{1cm}Pre:] The train objects do not exist. 
+\item[\hspace{1cm}Post:] Train objects are created from the data received from the \CS by making a request for said data. An exception is raised if the \CS is not running. A list of all the train objects is returned.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    train t[] = getTrains()
+\end{verbatim}
+\end{description}
+
+\begin{description}
+\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Post:] Returns the unique identifier of the train. (\CS id)
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    int t_id = train1.getID()
+\end{verbatim}
+\end{description}
+
+\subparagraph{getLocation} 
+\begin{description}
+\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Post:] Returns the array of sensors the train is occupying.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    location loc = train1.getLocation()
+\end{verbatim}
+\end{description}
+
+
+\subparagraph{occupies(location l)} 
+\begin{description}
+\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Post:] Returns true or false if any part of the train's location intersects with location l.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    if train1.occupies(loc):
+        print "occupying loc"
+    else:
+        print "not occupying loc
+\end{verbatim}
+\end{description}
+
 \subparagraph{getPower} Pre: The train object must exist. Post: Returns the current power level of the train.
 \subparagraph{setPower(integer p)} Pre: The train object must exist. Post: A message is sent to the \CS setting the current power level of the train to that which was given.
 \subparagraph{getDirection} Pre: The train object must exist. Post: Returns the current direction of the train (forward or backwards).
