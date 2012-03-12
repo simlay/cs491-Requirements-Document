@@ -902,6 +902,7 @@ These functions are more ambitious, and should only be attempted after all the p
 \newpage
 \section{Non-Functional Requirements}
 \subsection{Performance Requirements}
+The \TSL shall use multiple threads. None of these threads shall take enough CPU time to interfere with the main control. For example polling time of the train events shall be no more frequent than ten times per second.
 
 \subsection{Safety Requirements}
 The \TSL may interface only with the \CS. It may not talk directly to the Loco Buffer Server, as this would be a high risk environment for scripting. A bug in a script may frequently cause collisions or derailments, so we are disallowing this case entirely.
