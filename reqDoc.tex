@@ -97,14 +97,15 @@ The train object shall be either constructed by the user manually and sent to th
 \end{itemize}
 \paragraph{Functions}
 The train object shall be accessible by the following functions.
-\subparagraph{train(integer id, int length, list location)} Constructor. 
+\subparagraph{train(integer id, int length, location loc)} Constructor. 
 \begin{description}
 \item[\hspace{1cm}Pre:] The train object does not exist. 
 \item[\hspace{1cm}Post:] The train object exists, and it is either ``set'' or ``stolen'' through the \CS. The \CS will know where it is located based on the input, and the physical train is expected to be halted at initialization. If the ID is invalid for the \CS, an exception shall be sent back.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
-    myTrain = train(1204, 43, s1, s2, s3, s4)
+	myLoc = location( [ s1, s2, s3, s4 ] )
+    myTrain = train(1204, 43, myLoc)
 \end{verbatim}
 \end{description}
 
@@ -180,20 +181,22 @@ The train object shall be accessible by the following functions.
 \subparagraph{getDirection} 
 \begin{description}
 \item[\hspace{1cm}Pre:] The train object must exist. 
-\item[\hspace{1cm}Post:] Returns the current direction of the train (forward or backwards).
+\item[\hspace{1cm}Post:] Returns the current direction of the train (see 'direction' enum).
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
+	myDir = train1.getDirection()    
 \end{verbatim}
 \end{description}
 
 \subparagraph{setDirection(direction d)} 
 \begin{description}
 \item[\hspace{1cm}Pre:] The train object must exist. 
-\item[\hspace{1cm}Post:] A message is sent to the \CS setting the current direction of the train to that which was given.
+\item[\hspace{1cm}Post:] A message is sent to the \CS setting the current direction of the train to that which was given (see 'direction' enum).
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
+	train1.setDirection(direction.forward)
 \end{verbatim}
 \end{description}
 
@@ -204,16 +207,19 @@ The train object shall be accessible by the following functions.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
+    if train1.getLights():
+        print "lights are on"
 \end{verbatim}
 \end{description}
 
 \subparagraph{setLights(boolean l)} 
 \begin{description}
-\item[\hspace{1cm}Pre:] The train object must exist. 
+\item[\hspace{1cm}Pre:] The train object must exist.
 \item[\hspace{1cm}Post:] A message is sent to the \CS setting the current state of the lights to on or off based on input.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
+    train1.setLights(true)
 \end{verbatim}
 \end{description}
 
@@ -224,6 +230,8 @@ The train object shall be accessible by the following functions.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
+    if train1.getBell():
+        print "bell is on"
 \end{verbatim}
 \end{description}
 
@@ -234,16 +242,18 @@ The train object shall be accessible by the following functions.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
+    train1.setBell(true)
 \end{verbatim}
 \end{description}
 
 \subparagraph{soundHorn} 
 \begin{description}
 \item[\hspace{1cm}Pre:] The train object must exist. 
-\item[\hspace{1cm}Post:] A message is sent to the \CS that the train should sound its horn. The horn is a pulse, so there is no getter for this.
+\item[\hspace{1cm}Post:] A message is sent to the \CS that the train should sound its horn. The horn is a pulse, so there is no getter for this. (It has no state).
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
+    train1.soundHorn()
 \end{verbatim}
 \end{description}
 
@@ -254,6 +264,7 @@ The train object shall be accessible by the following functions.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
+    train1.mute()
 \end{verbatim}
 \end{description}
 
@@ -264,26 +275,30 @@ The train object shall be accessible by the following functions.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
+    train1.unmute()
+\end{verbatim}
 \end{verbatim}
 \end{description}
 
 \subparagraph{getSwitchInFront} 
 \begin{description}
 \item[\hspace{1cm}Pre:] The train object must exist. 
-\item[\hspace{1cm}Post:] Returns a reference to the switch which is closest to the train in front of it.
+\item[\hspace{1cm}Post:] Returns a reference to the switch which is closest to the train in front of it. The front is determined by direction of movement, not the engine of the train.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
+    nextSwitch = train1.getSwitchInFront()
 \end{verbatim}
 \end{description}
 
-\subparagraph{getDistanceTo(node dest)} 
+\subparagraph{getHeadSensor} 
 \begin{description}
 \item[\hspace{1cm}Pre:] The train object must exist. 
-\item[\hspace{1cm}Post:] Returns distance to the destination.
+\item[\hspace{1cm}Post:] Returns a reference to the sensor in the front of this train's location. The front is determined by direction of movement, not the engine of the train.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
+    mySensor = train1.getHeadSensor()
 \end{verbatim}
 \end{description}
 
@@ -301,16 +316,6 @@ The train object shall be accessible by the following functions.
 \begin{description}
 \item[\hspace{1cm}Pre:] The train object must exist. 
 \item[\hspace{1cm}Post:] A trainState (enum defined prior) is returned for which state the train is in.
-\item[\hspace{1cm}Example:]
-\begin{verbatim}
-
-\end{verbatim}
-\end{description}
-
-\subparagraph{toString} 
-\begin{description}
-\item[\hspace{1cm}Pre:] The train object must exist. 
-\item[\hspace{1cm}Post:] Returns a string containing all the information about the train's current state.
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
