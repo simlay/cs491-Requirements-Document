@@ -608,6 +608,17 @@ The location object shall be accessible by the following functions.
 \end{verbatim}
 \end{description}
 
+\subparagraph{getSensors}
+\begin{description}
+\item[\hspace{1cm}Pre:] The location must exist. 
+\item[\hspace{1cm}Post:] Returns the list of sensors in this location.
+\item[\hspace{1cm}Example:]
+\begin{verbatim}
+
+    mySensors = myLocation.getSensors()   
+\end{verbatim}
+\end{description}
+
 \subsubsection{Section}
 Sections are subsets of locations. They must be a pair of adjacent sensors. All of the methods of locations are valid on sections, as well as a few others.
 \paragraph{Data}
@@ -710,14 +721,14 @@ The path object shall be accessible by the following functions.
 \end{verbatim}
 \end{description}
 
-\subparagraph{buildPath(sensor a, b, int Flag=default)} Alternative Constructor.
+\subparagraph{buildPath(sensor a, b, int Flags = default)} Alternative Constructor.
 \begin{description}
 \item[\hspace{1cm}Pre:] The path object does not exist.
-\item[\hspace{1cm}Post:] The path object is created as the list of provided sensors.
+\item[\hspace{1cm}Post:] The path object is created as the list of sensors from sensor a to sensor b. Flags determines how the path will be built - See pathFlags for more details 
 \item[\hspace{1cm}Example:]
 \begin{verbatim}
 
-    myPath = path(mySensors)
+    myPath = buildPath(sensor1, sensor2, Flags)
 \end{verbatim}
 \end{description}
 
